@@ -1,4 +1,6 @@
 import React from 'react';
+import ClassModelList from './ClassModelList';
+
 
 class Mira extends React.Component {
     constructor(props) {
@@ -8,13 +10,43 @@ class Mira extends React.Component {
         }
     }
 
+    // Handlers
+    handleClassModelClick(classModel) {
+        const state = {};
+        Object.assign(state, this.state);
+
+        state.currentState = 'ViewInstances';
+        state.classModel = classModel;
+
+        this.setState(state);
+    }
+
+    // Rendering
+    renderClassModels() {
+        return (
+            <div>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-sm">
+                            <h4>ClassModels</h4>
+                        </div>
+                    </div> 
+                </div>
+                <div>
+                    <ClassModelList 
+                        onClick={this.handleClassModelClick.bind(this)}
+                        classModels={['ClassModel1', 'ClassModel2', 'ClassModel3']}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     render() {
         switch(this.state.currentState) {
 
-            case 'ClassModels': 
-                return (
-                    <div>ClassModels</div>
-                );
+            case 'ClassModels':
+                return this.renderClassModels();
             case 'ViewInstances':
                 return (
                     <div>ViewInstances</div>
