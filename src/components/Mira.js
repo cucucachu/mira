@@ -10,6 +10,10 @@ class Mira extends React.Component {
         }
     }
 
+    //LifeCycle
+    componentDidMount() {
+    }
+
     // Handlers
     handleClassModelClick(classModel) {
         const state = {};
@@ -35,7 +39,6 @@ class Mira extends React.Component {
                 <div>
                     <ClassModelList 
                         onClick={this.handleClassModelClick.bind(this)}
-                        classModels={['ClassModel1', 'ClassModel2', 'ClassModel3']}
                     />
                 </div>
             </div>
@@ -49,7 +52,7 @@ class Mira extends React.Component {
                 return this.renderClassModels();
             case 'ViewInstances':
                 return (
-                    <div>ViewInstances</div>
+                    <div className="container">ViewInstances for Class Model: {this.state.classModel} </div>
                 );
             case 'ViewInstance':
                 return (
