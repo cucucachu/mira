@@ -1,5 +1,6 @@
 import React from 'react';
-import ClassModelList from './ClassModelList';
+import ClassModelList from './ClassModelList/ClassModelList';
+import ViewInstances from './ViewInstances/ViewInstances';
 
 
 class Mira extends React.Component {
@@ -7,6 +8,7 @@ class Mira extends React.Component {
         super(props);
         this.state = {
             currentState: 'ClassModels',
+            classModel: null,
         }
     }
 
@@ -25,8 +27,16 @@ class Mira extends React.Component {
         this.setState(state);
     }
 
+    handleClickHome() {
+        const state = {};
+        Object.assign(state, this.state);
+        state.currentState = 'ClassModels';
+
+        this.setState(state);
+    }
+
     // Rendering
-    renderClassModels() {
+    renderClassModelList() {
         return (
             <div>
                 <div className="container">
@@ -45,15 +55,22 @@ class Mira extends React.Component {
         );
     }
 
+    renderViewInstances() {
+        return (
+            <ViewInstances 
+                classModel={this.state.classModel}
+                onClickHome={this.handleClickHome.bind(this)}
+            />
+        )
+    }
+
     render() {
         switch(this.state.currentState) {
 
             case 'ClassModels':
-                return this.renderClassModels();
+                return this.renderClassModelList();
             case 'ViewInstances':
-                return (
-                    <div className="container">ViewInstances for Class Model: {this.state.classModel} </div>
-                );
+                return this.renderViewInstances();
             case 'ViewInstance':
                 return (
                     <div>ViewInstance</div>

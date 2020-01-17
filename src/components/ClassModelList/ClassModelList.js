@@ -14,9 +14,8 @@ class ClassModelList extends Component {
     componentDidMount() {
         fetch('http://localhost:8000/mira/')
             .then(response => response.json())
-            .then(json => {
-                console.log(JSON.stringify(json, null, 2))
-                this.setState({ classModels: json })
+            .then(classModels => {
+                this.setState({ classModels: classModels.sort() })
             }
             ).catch(error => console.log(error.message));
     }
