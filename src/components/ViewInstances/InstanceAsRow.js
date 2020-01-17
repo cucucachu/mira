@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 
+import InstanceLink from './InstanceLink';
+import InstanceSet from './InstanceSet';
+import Attribute from './Attribute';
+
 class InstanceAsRow extends Component {
     constructor(props) {
         super(props);
@@ -10,53 +14,57 @@ class InstanceAsRow extends Component {
     }
 
     render() {
+        const instance = this.state.instance;
+
         return (
             <tr>
-                <td>{this.state.instance.displayAs}</td>
+                <td>
+                    <InstanceLink
+                        instance={instance}
+                        key={'InstanceLink:'+instance.className+instance.id}
+                    />
+                </td>
                 {
                     this.state.schema.attributes.map(a => {
                         return (
-                            <td>{this.state.instance[a.name] }</td>
+                            <td>
+                                <Attribute
+                                    value={this.state.instance[a.name] }
+                                    key={'Attribute:'+instance.id+a.name}
+                                />
+                            </td>
                         )
                     })
                 }
                 {
                     this.state.schema.relationships.map(r => {
                         if (r.singular) {
-                            if (this.state.instance[r.name]) {
-                                return (
-                                    <td>
-                                        {
-                                            this.state.instance[r.name] ? this.state.instance[r.name].displayAs: 'empty'
-                                        }
-                                    </td>
-                                );
-                            }
-                            else {
-                                return <td>Empty</td>;
-                            }
+                            const relatedInstance = this.state.instance[r.name];
+                            return (
+                                <td>
+                                    <InstanceLink
+                                        instance={relatedInstance}
+                                        key={'SingularRelationship:' + instance.id + r.name}
+                                    />
+                                </td>
+                            )
                         }
                         else {
-                            if (this.state.instance[r.name].length > 0) { 
-                                return (
-                                    <td>
-                                    {this.state.instance[r.name].map(i => i.displayAs + '\n')}
-                                    </td>
-                                )
-                            }
-                            else {
-                                return <td>Empty</td>;
-                            }
+                            const relatedInstanceSet = this.state.instance[r.name];
+                            return (
+                                <td>
+                                    <InstanceSet 
+                                        instances={relatedInstanceSet}
+                                        key={'NonSingularRelationship:' + instance.id + r.name}
+                                    />
+                                </td>
+                            )
                         }
 
                     })
                 }
                 <td>
-                    <div className="btn-group btn-group-sm">
-                        <button className="btn btn-info">View</button>
-                        <button className="btn btn-warning">Edit</button>
-                        <button className="btn btn-danger">Delete</button>
-                    </div>
+                    <button className="btn btn-danger btn-sm" key={'DeleteInstanceButton:' + instance.id}>Delete</button>
                 </td>
             </tr>
         );

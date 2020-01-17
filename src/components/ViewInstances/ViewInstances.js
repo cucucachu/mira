@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import InstancesTable from './InstancesTable';
-import TablePages from './TablePages';
+import TablePagination from './TablePagination';
 
 class ViewInstances extends Component {
     constructor(props) {
@@ -14,14 +14,23 @@ class ViewInstances extends Component {
                 relationships: [],
             },
             instances: [],
-            page: 0,
+            page: 1,
             pageSize: 10,
             totalNumberOfInstances: 0,
             loaded: false,
         };
     }
 
-    componentDidMount() {
+    loadPage(pageNumber) {
+        let newState = {};
+        Object.assign(newState, this.state);
+        newState.loaded = false;
+        this.setState(newState);
+
+        if (pageNumber <= 0) {
+            console.log('bad page number');
+        }
+
         fetch('http://localhost:8000/mira/' + this.state.classModel)
             .then(response => response.json())
             .then((schema) => {
@@ -33,6 +42,7 @@ class ViewInstances extends Component {
                     body: JSON.stringify({
                         className: this.state.classModel,
                         pageSize: this.state.pageSize,
+                        page: pageNumber-1,
                     }),
                 }
                 fetch('http://localhost:8000/mira/getInstances', postRequest)
@@ -44,7 +54,7 @@ class ViewInstances extends Component {
                             classModel: this.state.classModel,
                             schema,
                             instances: getInstancesResponse.instances,
-                            page: getInstancesResponse.page,
+                            page: getInstancesResponse.page + 1,
                             pageSize: getInstancesResponse.pageSize,
                             totalNumberOfInstances: getInstancesResponse.totalNumberOfInstances,
                             loaded: true,
@@ -54,6 +64,15 @@ class ViewInstances extends Component {
                 );
             }
         );
+
+    }
+
+    componentDidMount() {
+        this.loadPage(1);
+    }
+
+    handleClickPage(pageNumber) {
+        this.loadPage(pageNumber);
     }
 
     renderInfo() {
@@ -61,9 +80,9 @@ class ViewInstances extends Component {
             return (
                 <div id="instances-info">
                     Viewing instances 
-                    {' ' + ((this.state.page % this.state.totalNumberOfInstances) + 1) + ' '}
+                    {' ' + (((this.state.page - 1) * this.state.pageSize) + 1) + ' '}
                     through 
-                    {' ' + ((this.state.page % this.state.totalNumberOfInstances) + this.state.pageSize)+ ' '}
+                    {' ' + (((this.state.page -1) * this.state.pageSize) + this.state.pageSize)+ ' '}
                     of 
                     {' ' + (this.state.totalNumberOfInstances)}
                 </div>
@@ -82,13 +101,16 @@ class ViewInstances extends Component {
                         classModel={this.state.classModel}
                         schema={this.state.schema}
                         instances={this.state.instances}
+                        key="InstancesTable"
                     />
                     <div className="row justify-content-between">
                         <div className="col-4"></div>
                         <div className="col-4">
-                            <TablePages
+                            <TablePagination
                                 page={this.state.page}
                                 lastPage={(this.state.totalNumberOfInstances / this.state.pageSize) - (this.state.totalNumberOfInstances % this.state.pageSize)}
+                                onClick={this.handleClickPage.bind(this)}
+                                key="InstancesTablePagination"
                             />
                         </div>
                         <div className="col-4"></div>
@@ -98,32 +120,28 @@ class ViewInstances extends Component {
             }
             else return <div className="container">No Instances</div>
         }
-        else return <div className="container"><div className="spinner-border text-primary"></div></div>
+        else return (
+            <div className="container">
+                <div className="row">
+                    <div className="col-5"></div>
+                    <div className="col-2">    
+                        <div className="spinner-border text-primary"></div>
+                    </div>
+                    <div className="col-5"></div>
+                </div>
+            </div>
+        )
     }
 
     render() {
         return (
             <div>
                 <div className="container">
-                    <div className="row">
-                        <div className="col col-sm">
-                            <button 
-                                onClick={this.state.onClickHome}
-                                className="btn btn-primary"
-                            >
-                                Home
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-                <div className="container">
                     <div className="row justify-content-between">
                         <div className="col-11">
                             <h4>View Instances of {this.state.classModel}</h4> 
                         </div>
                         <div className="col-1">
-                            <button className="btn btn-primary">Create</button>
                         </div>
                     </div>
                 </div>

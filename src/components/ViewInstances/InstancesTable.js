@@ -24,7 +24,12 @@ class InstancesTable extends Component {
                         { 
                             this.state.schema.relationships.map(r => <th scope="col" key={'relationship' + r.name}>{r.name}</th>)
                         }
-                        <th scope="col">Actions</th>
+                        <th scope="col">
+                            <span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                            <button className="btn btn-info btn-sm">+</button>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,7 +39,7 @@ class InstancesTable extends Component {
                                 <InstanceAsRow 
                                     schema={this.state.schema} 
                                     instance={i} 
-                                    key={'instanceAsRow: ' + i}
+                                    key={'instanceAsRow:' + String(i.id)}
                                 />
                             );
                         })

@@ -1,4 +1,6 @@
 import React from 'react';
+
+import Header from './Header';
 import ClassModelList from './ClassModelList/ClassModelList';
 import ViewInstances from './ViewInstances/ViewInstances';
 
@@ -17,7 +19,7 @@ class Mira extends React.Component {
     }
 
     // Handlers
-    handleClassModelClick(classModel) {
+    handleClickClassModel(classModel) {
         const state = {};
         Object.assign(state, this.state);
 
@@ -34,11 +36,14 @@ class Mira extends React.Component {
 
         this.setState(state);
     }
-
+    
     // Rendering
     renderClassModelList() {
         return (
             <div>
+                <Header 
+                    onClick={this.handleClickHome.bind(this)}
+                />
                 <div className="container">
                     <div className="row">
                         <div className="col-sm">
@@ -48,7 +53,7 @@ class Mira extends React.Component {
                 </div>
                 <div>
                     <ClassModelList 
-                        onClick={this.handleClassModelClick.bind(this)}
+                        onClick={this.handleClickClassModel.bind(this)}
                     />
                 </div>
             </div>
@@ -57,10 +62,14 @@ class Mira extends React.Component {
 
     renderViewInstances() {
         return (
-            <ViewInstances 
-                classModel={this.state.classModel}
-                onClickHome={this.handleClickHome.bind(this)}
-            />
+            <div>
+                <Header 
+                    onClick={this.handleClickHome.bind(this)}
+                />
+                <ViewInstances 
+                    classModel={this.state.classModel}
+                />
+            </div>
         )
     }
 
