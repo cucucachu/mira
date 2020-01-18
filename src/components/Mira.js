@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Header from './Header';
-import ClassModelList from './ClassModelList/ClassModelList';
+import ClassModelTable from './ClassModelTable/ClassModelTable';
 import ViewInstances from './ViewInstances/ViewInstances';
 
 
@@ -50,7 +50,7 @@ class Mira extends React.Component {
     }
     
     // Rendering
-    renderClassModelList() {
+    renderClassModelTable() {
         return (
             <div>
                 <Header 
@@ -63,9 +63,10 @@ class Mira extends React.Component {
                         </div>
                     </div> 
                 </div>
-                <div>
-                    <ClassModelList 
-                        onClick={this.handleClickClassModel.bind(this)}
+                <div className="container">
+                    <ClassModelTable 
+                        onClickViewInstances={this.handleClickClassModel.bind(this)}
+                        onClickCreateInstance={this.handleClickCreateInstance}
                     />
                 </div>
             </div>
@@ -92,7 +93,7 @@ class Mira extends React.Component {
         switch(this.state.currentState) {
 
             case 'ClassModels':
-                return this.renderClassModelList();
+                return this.renderClassModelTable();
             case 'ViewInstances':
                 return this.renderViewInstances();
             case 'ViewInstance':

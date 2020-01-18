@@ -31,7 +31,7 @@ class InstanceAsRow extends Component {
                 {
                     this.state.schema.attributes.map(a => {
                         return (
-                            <td>
+                            <td key={'AttributeCell:'+instance.id+a.name}>
                                 <Attribute
                                     value={this.state.instance[a.name] }
                                     key={'Attribute:'+instance.id+a.name}
@@ -45,7 +45,7 @@ class InstanceAsRow extends Component {
                         if (r.singular) {
                             const relatedInstance = this.state.instance[r.name];
                             return (
-                                <td>
+                                <td key={'SingularRelationshipCell:' + instance.id + r.name}>
                                     <InstanceLink
                                         instance={relatedInstance}
                                         onClick={this.state.onClickViewInstance}
@@ -57,7 +57,7 @@ class InstanceAsRow extends Component {
                         else {
                             const relatedInstanceSet = this.state.instance[r.name];
                             return (
-                                <td>
+                                <td key={'NonSingularRelationshipCell:' + instance.id + r.name}>
                                     <InstanceSet 
                                         instances={relatedInstanceSet}
                                         onClickViewInstance={this.state.onClickViewInstance}

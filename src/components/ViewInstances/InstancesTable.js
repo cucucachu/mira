@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import InstanceAsRow from './InstanceAsRow';
-import CreateInstanceButton from './CreateInstanceButton';
+import CreateInstanceButton from '../CreateInstanceButton';
 
 class InstancesTable extends Component {
     constructor(props) {
