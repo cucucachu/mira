@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import InstanceAsRow from './InstanceAsRow';
+import CreateInstanceButton from './CreateInstanceButton';
 
 class InstancesTable extends Component {
     constructor(props) {
@@ -9,6 +10,9 @@ class InstancesTable extends Component {
             classModel: props.classModel,
             schema: props.schema,
             instances: props.instances,
+            onClickDeleteInstance: props.onClickDeleteInstance,
+            onClickViewInstance: props.onClickViewInstance,
+            onClickCreateInstance: props.onClickCreateInstance,
         };
     }
 
@@ -28,7 +32,10 @@ class InstancesTable extends Component {
                             <span>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                             </span>
-                            <button className="btn btn-info btn-sm">+</button>
+                            <CreateInstanceButton
+                                classModel={this.state.classModel}
+                                onClick={this.state.onClickCreateInstance} 
+                            />
                         </th>
                     </tr>
                 </thead>
@@ -39,6 +46,8 @@ class InstancesTable extends Component {
                                 <InstanceAsRow 
                                     schema={this.state.schema} 
                                     instance={i} 
+                                    onClickDeleteInstance={this.state.onClickDeleteInstance}
+                                    onClickViewInstance={this.state.onClickViewInstance}
                                     key={'instanceAsRow:' + String(i.id)}
                                 />
                             );

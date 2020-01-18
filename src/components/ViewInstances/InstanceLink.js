@@ -5,14 +5,14 @@ class InstanceLink extends Component {
         super(props);
         this.state = {
             instance: props.instance,
-            onClick: () => console.log('clicked instance ' + props.instance.displayAs),
+            onClick: props.onClick,
         }
     }
 
     render() {
         if (this.state.instance) {
             return (
-                <a href="#root" onClick={this.state.onClick}>{this.state.instance.displayAs}</a>
+                <a href="#root" onClick={() => this.state.onClick(this.state.instance)}>{this.state.instance.displayAs}</a>
             )
         }
         else {

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import InstanceLink from './InstanceLink';
 import InstanceSet from './InstanceSet';
 import Attribute from './Attribute';
+import DeleteInstanceButton from './DeleteInstanceButton';
 
 class InstanceAsRow extends Component {
     constructor(props) {
@@ -10,6 +11,8 @@ class InstanceAsRow extends Component {
         this.state = {
             schema: props.schema,
             instance: props.instance,
+            onClickDeleteInstance: props.onClickDeleteInstance,
+            onClickViewInstance: props.onClickViewInstance,
         }
     }
 
@@ -21,6 +24,7 @@ class InstanceAsRow extends Component {
                 <td>
                     <InstanceLink
                         instance={instance}
+                        onClick={this.state.onClickViewInstance}
                         key={'InstanceLink:'+instance.className+instance.id}
                     />
                 </td>
@@ -44,6 +48,7 @@ class InstanceAsRow extends Component {
                                 <td>
                                     <InstanceLink
                                         instance={relatedInstance}
+                                        onClick={this.state.onClickViewInstance}
                                         key={'SingularRelationship:' + instance.id + r.name}
                                     />
                                 </td>
@@ -55,6 +60,7 @@ class InstanceAsRow extends Component {
                                 <td>
                                     <InstanceSet 
                                         instances={relatedInstanceSet}
+                                        onClickViewInstance={this.state.onClickViewInstance}
                                         key={'NonSingularRelationship:' + instance.id + r.name}
                                     />
                                 </td>
@@ -64,7 +70,11 @@ class InstanceAsRow extends Component {
                     })
                 }
                 <td>
-                    <button className="btn btn-danger btn-sm" key={'DeleteInstanceButton:' + instance.id}>Delete</button>
+                    <DeleteInstanceButton
+                        instance={instance}
+                        onClick={this.state.onClickDeleteInstance}
+                        key={'DeleteInstanceButton:' + instance.id}
+                    />
                 </td>
             </tr>
         );

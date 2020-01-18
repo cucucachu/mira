@@ -36,6 +36,18 @@ class Mira extends React.Component {
 
         this.setState(state);
     }
+
+    handleClickDeleteInstance(instance) {
+        console.log('Clicked "Delete" for instance ' + instance.displayAs);
+    }
+
+    handleClickViewInstance(instance) {
+        console.log('Clicked "View" for instance ' + instance.displayAs);
+    }
+
+    handleClickCreateInstance(classModel) {
+        console.log('Clicked "Create Instance" for classModel ' + classModel);
+    }
     
     // Rendering
     renderClassModelList() {
@@ -68,6 +80,9 @@ class Mira extends React.Component {
                 />
                 <ViewInstances 
                     classModel={this.state.classModel}
+                    onClickDeleteInstance={this.handleClickDeleteInstance.bind(this)}
+                    onClickViewInstance={this.handleClickViewInstance.bind(this)}
+                    onClickCreateInstance={this.handleClickCreateInstance.bind(this)}
                 />
             </div>
         )

@@ -7,6 +7,7 @@ class InstanceSet extends Component {
         super(props);
         this.state = {
             instances: props.instances,
+            onClickViewInstance: props.onClickViewInstance,
         }
     }
 
@@ -21,6 +22,7 @@ class InstanceSet extends Component {
                                     <li>
                                         <InstanceLink
                                             instance={i}
+                                            onClick={this.state.onClickViewInstance}
                                             key={this.key + 'InstanceLink:' + i.id}
                                         />
                                     </li>

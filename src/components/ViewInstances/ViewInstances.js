@@ -18,6 +18,9 @@ class ViewInstances extends Component {
             pageSize: 10,
             totalNumberOfInstances: 0,
             loaded: false,
+            onClickDeleteInstance: props.onClickDeleteInstance,
+            onClickViewInstance: props.onClickViewInstance,
+            onClickCreateInstance: props.onClickCreateInstance,
         };
     }
 
@@ -101,6 +104,9 @@ class ViewInstances extends Component {
                         classModel={this.state.classModel}
                         schema={this.state.schema}
                         instances={this.state.instances}
+                        onClickDeleteInstance={this.state.onClickDeleteInstance}
+                        onClickViewInstance={this.state.onClickViewInstance}
+                        onClickCreateInstance={this.state.onClickCreateInstance}
                         key="InstancesTable"
                     />
                     <div className="row justify-content-between">
