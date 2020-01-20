@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 
 import Spinner from '../Common/Spinner';
 import Instance from '../Instance/Instance';
+import DeleteInstanceButton from '../Common/DeleteInstanceButton';
+import EditInstanceButton from '../Common/EditInstanceButton';
+import VerticalPad from '../Common/VerticalPad';
 
 class ViewInstance extends Component {
     constructor(props) {
@@ -100,11 +103,22 @@ class ViewInstance extends Component {
                 <div>
                     <div className="container">
                         <div className="row">
-                            <div className="col-sm">
+                            <div className="col-10">
                                 <h4>View Instance {this.state.instance.displayAs}</h4>
+                            </div>
+                            <div className="col-2">
+                                <EditInstanceButton
+                                    instance={this.state.instance}
+                                    onClick={this.props.onClickEditInstance} 
+                                />
+                                <DeleteInstanceButton
+                                    instance={this.state.instance}
+                                    onClick={this.props.onClickDeleteInstance} 
+                                />
                             </div>
                         </div>
                     </div>
+                    <VerticalPad />
                     <Instance
                         instance={this.state.instance}
                         schema={this.state.schema}
