@@ -1,39 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import InstanceLink from './InstanceLink';
 import InstanceSet from './InstanceSet';
 import Attribute from './Attribute';
 import DeleteInstanceButton from './DeleteInstanceButton';
 
-class InstanceAsRow extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            schema: props.schema,
-            instance: props.instance,
-            onClickDeleteInstance: props.onClickDeleteInstance,
-            onClickViewInstance: props.onClickViewInstance,
-        }
-    }
-
-    render() {
-        const instance = this.state.instance;
+function InstanceAsRow(props) {
+        const instance = props.instance;
 
         return (
             <tr>
                 <td>
                     <InstanceLink
                         instance={instance}
-                        onClick={this.state.onClickViewInstance}
+                        onClick={props.onClickViewInstance}
                         key={'InstanceLink:'+instance.className+instance.id}
                     />
                 </td>
                 {
-                    this.state.schema.attributes.map(a => {
+                    props.schema.attributes.map(a => {
                         return (
                             <td key={'AttributeCell:'+instance.id+a.name}>
                                 <Attribute
-                                    value={this.state.instance[a.name] }
+                                    value={props.instance[a.name] }
                                     key={'Attribute:'+instance.id+a.name}
                                 />
                             </td>
@@ -41,26 +30,26 @@ class InstanceAsRow extends Component {
                     })
                 }
                 {
-                    this.state.schema.relationships.map(r => {
+                    props.schema.relationships.map(r => {
                         if (r.singular) {
-                            const relatedInstance = this.state.instance[r.name];
+                            const relatedInstance = props.instance[r.name];
                             return (
                                 <td key={'SingularRelationshipCell:' + instance.id + r.name}>
                                     <InstanceLink
                                         instance={relatedInstance}
-                                        onClick={this.state.onClickViewInstance}
+                                        onClick={props.onClickViewInstance}
                                         key={'SingularRelationship:' + instance.id + r.name}
                                     />
                                 </td>
                             )
                         }
                         else {
-                            const relatedInstanceSet = this.state.instance[r.name];
+                            const relatedInstanceSet = props.instance[r.name];
                             return (
                                 <td key={'NonSingularRelationshipCell:' + instance.id + r.name}>
                                     <InstanceSet 
                                         instances={relatedInstanceSet}
-                                        onClickViewInstance={this.state.onClickViewInstance}
+                                        onClickViewInstance={props.onClickViewInstance}
                                         key={'NonSingularRelationship:' + instance.id + r.name}
                                     />
                                 </td>
@@ -72,13 +61,12 @@ class InstanceAsRow extends Component {
                 <td>
                     <DeleteInstanceButton
                         instance={instance}
-                        onClick={this.state.onClickDeleteInstance}
+                        onClick={props.onClickDeleteInstance}
                         key={'DeleteInstanceButton:' + instance.id}
                     />
                 </td>
             </tr>
         );
-    }
 }
 
 export {InstanceAsRow as default}

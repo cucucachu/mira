@@ -8,7 +8,6 @@ class ViewInstances extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            classModel: props.classModel,
             onClickHome: props.onClickHome,
             schema: {
                 attributes: [],
@@ -22,9 +21,6 @@ class ViewInstances extends Component {
             pageSize: 10,
             totalNumberOfInstances: 0,
             loaded: false,
-            onClickDeleteInstance: props.onClickDeleteInstance,
-            onClickViewInstance: props.onClickViewInstance,
-            onClickCreateInstance: props.onClickCreateInstance,
         };
     }
 
@@ -35,7 +31,7 @@ class ViewInstances extends Component {
     }
 
     async fetchSchema() {
-        const response = await fetch('http://localhost:8000/mira/' + this.state.classModel);
+        const response = await fetch('http://localhost:8000/mira/' + this.props.classModel);
         return response.json();
     }
 
@@ -46,7 +42,7 @@ class ViewInstances extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                className: this.state.classModel,
+                className: this.props.classModel,
                 filter: this.state.filter,
                 pageSize: this.state.pageSize,
                 page: page - 1,
@@ -208,13 +204,13 @@ class ViewInstances extends Component {
                     <div className="container">
                     {this.renderInfo()}
                     <InstancesTable 
-                        classModel={this.state.classModel}
+                        classModel={this.props.classModel}
                         schema={this.state.schema}
                         instances={this.state.instances}
                         sortButtonStates={this.state.sortButtonStates}
-                        onClickDeleteInstance={this.state.onClickDeleteInstance}
-                        onClickViewInstance={this.state.onClickViewInstance}
-                        onClickCreateInstance={this.state.onClickCreateInstance}
+                        onClickDeleteInstance={this.props.onClickDeleteInstance}
+                        onClickViewInstance={this.props.onClickViewInstance}
+                        onClickCreateInstance={this.props.onClickCreateInstance}
                         onClickSort={this.handleClickSortButton.bind(this)}
                         key="InstancesTable"
                     />
@@ -246,7 +242,7 @@ class ViewInstances extends Component {
                 <div className="container">
                     <div className="row justify-content-between">
                         <div className="col-11">
-                            <h4>View Instances of {this.state.classModel}</h4> 
+                            <h4>View Instances of {this.props.classModel}</h4> 
                         </div>
                         <div className="col-1">
                         </div>

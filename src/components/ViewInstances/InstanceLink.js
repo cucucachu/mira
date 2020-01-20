@@ -1,25 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class InstanceLink extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            instance: props.instance,
-            onClick: props.onClick,
-        }
+function InstanceLink(props) {
+    if (props.instance) {
+        return (
+            <a href="#root" onClick={() => props.onClick(props.instance)}>{props.instance.displayAs}</a>
+        )
     }
-
-    render() {
-        if (this.state.instance) {
-            return (
-                <a href="#root" onClick={() => this.state.onClick(this.state.instance)}>{this.state.instance.displayAs}</a>
-            )
-        }
-        else {
-            return (
-                <p></p>
-            )
-        }
+    else {
+        return (
+            <p></p>
+        )
     }
 }
 
