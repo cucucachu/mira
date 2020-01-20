@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import Spinner from '../Spinner';
-import Instance from './Instance';
+import Spinner from '../Common/Spinner';
+import Instance from '../Instance/Instance';
 
 class ViewInstance extends Component {
     constructor(props) {

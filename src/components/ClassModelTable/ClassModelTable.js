@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import ClassModelAsRow from './ClassModelAsRow';
-import Spinner from '../Spinner';
+import Spinner from '../Common/Spinner';
 
 class ClassModelTable extends Component {
     constructor(props) {

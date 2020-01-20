@@ -1,7 +1,7 @@
 import React from 'react';
 
 import InstanceAsRow from './InstanceAsRow';
-import CreateInstanceButton from '../CreateInstanceButton';
+import CreateInstanceButton from '../Common/CreateInstanceButton';
 import SortButton from './SortButton';
 
 function InstancesTable(props) {

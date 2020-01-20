@@ -1,6 +1,6 @@
 import React from 'react';
 
-import InstanceLink from '../ViewInstances/InstanceLink';
+import InstanceLink from './InstanceLink';
 
 function SingularRelationshipAsRow(props) {
     return (

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CreateInstanceButton from '../CreateInstanceButton';
+import CreateInstanceButton from '../Common/CreateInstanceButton';
 import ClassModelLink from './ClassModelLink';
 
 function ClassModelAsRow(props) {

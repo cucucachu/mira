@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import InstancesTable from './InstancesTable';
 import TablePagination from './TablePagination';
-import Spinner from '../Spinner';
+import Spinner from '../Common/Spinner';
 
 class ViewInstances extends Component {
     constructor(props) {

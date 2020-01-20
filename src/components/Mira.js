@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Header from './Header';
+import Header from './Common/Header';
 import ClassModelTable from './ClassModelTable/ClassModelTable';
 import ViewInstances from './ViewInstances/ViewInstances';
 import ViewInstance from './ViewInstance/ViewInstance';

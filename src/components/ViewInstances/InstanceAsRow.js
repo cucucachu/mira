@@ -1,9 +1,9 @@
 import React from 'react';
 
-import InstanceLink from './InstanceLink';
-import InstanceSet from './InstanceSet';
-import Attribute from './Attribute';
-import DeleteInstanceButton from './DeleteInstanceButton';
+import InstanceLink from '../Instance/InstanceLink';
+import InstanceSet from '../Instance/InstanceSet';
+import Attribute from '../Instance/Attribute';
+import DeleteInstanceButton from '../Common/DeleteInstanceButton';
 
 function InstanceAsRow(props) {
         const instance = props.instance;
