@@ -17,14 +17,15 @@ class ClassModelTable extends Component {
     loadClassModels() {
         fetch('http://localhost:8000/mira/')
             .then(response => response.json())
-            .then(classModels => {
-                const newState = {};
-                Object.assign(newState, this.state);
+            .then(
+                classModels => {
+                    const newState = {};
+                    Object.assign(newState, this.state);
 
-                newState.classModels = classModels.sort();
-                newState.loaded = true;
-                this.setState(newState);
-            }
+                    newState.classModels = classModels.sort();
+                    newState.loaded = true;
+                    this.setState(newState);
+                }
             ).catch(error => console.log(error.message));
     }
 

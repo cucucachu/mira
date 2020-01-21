@@ -61,6 +61,18 @@ class CreateInstance extends Component {
         this.setState(state);
     }
 
+    handleSelectSingularRelationship(relationship, instance) {
+        const state = {};
+        Object.assign(state, this.state);
+        const updatedInstance = {};
+        Object.assign(updatedInstance, this.state.updatedInstance);
+        state.updatedInstance = updatedInstance;
+
+        updatedInstance[relationship.name] = instance;
+
+        this.setState(state);
+    }
+
     isNumber(value) {
         return /[0-9]*\.?[0-9]*/g.test(value);
     }
@@ -164,6 +176,7 @@ class CreateInstance extends Component {
                         schema={this.state.schema}
                         onChangeAttribute={this.handleChangeAttribute.bind(this)}
                         onClickPutInstance={this.onClickPutInstance.bind(this)}
+                        onSelectSingularRelationship={this.handleSelectSingularRelationship.bind(this)}
                     />
                 </div>
 
