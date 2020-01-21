@@ -4,6 +4,7 @@ import Header from './Common/Header';
 import ClassModelTable from './ClassModelTable/ClassModelTable';
 import ViewInstances from './ViewInstances/ViewInstances';
 import ViewInstance from './ViewInstance/ViewInstance';
+import CreateInstance from './CreateInstance/CreateInstance';
 
 
 class Mira extends React.Component {
@@ -53,7 +54,12 @@ class Mira extends React.Component {
     }
 
     handleClickCreateInstance(classModel) {
-        console.log('Clicked "Create Instance" for classModel ' + classModel);
+        const state = {};
+        Object.assign(state, this.state);
+        state.currentState = 'CreateInstance'
+        state.classModel = classModel;
+        state.id = null;
+        this.setState(state);
     }
 
     handleClickEditInstance(instance) {
@@ -81,7 +87,7 @@ class Mira extends React.Component {
                 <div className="container">
                     <ClassModelTable 
                         onClickViewInstances={this.handleClickClassModel.bind(this)}
-                        onClickCreateInstance={this.handleClickCreateInstance}
+                        onClickCreateInstance={this.handleClickCreateInstance.bind(this)}
                     />
                 </div>
             </div>
@@ -122,6 +128,20 @@ class Mira extends React.Component {
         )
     }
 
+    renderCreateInstance() {
+        return (
+            <div>
+                <Header 
+                    onClick={this.handleClickHome.bind(this)}
+                />
+                <CreateInstance
+                    classModel={this.state.classModel}
+                    id={this.state.id}
+                />
+            </div>
+        )
+    }
+
     render() {
         switch(this.state.currentState) {
 
@@ -131,6 +151,8 @@ class Mira extends React.Component {
                 return this.renderViewInstances();
             case 'ViewInstance':
                 return this.renderViewInstance();
+            case 'CreateInstance':
+                return this.renderCreateInstance();
             case 'EditInstance':
                 return (
                     <div>EditInstance</div>
