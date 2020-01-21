@@ -1,11 +1,11 @@
 import React from 'react';
 
-function TextBox(props) {
+function Checkbox(props) {
     return (
         <input 
-            type="text" 
-            className="form-control"
-            value={String(props.value)}
+            type="checkbox" 
+            className="form-check-input"
+            checked={props.value}
             onChange={ (e) => 
                 props.onChange(e, props.attribute) 
             }
@@ -13,4 +13,4 @@ function TextBox(props) {
     )
 }
 
-export { TextBox as default }
+export { Checkbox as default }

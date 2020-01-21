@@ -1,11 +1,11 @@
 import React from 'react';
 
-function TextBox(props) {
+function DatePicker(props) {
     return (
         <input 
-            type="text" 
+            type="date" 
             className="form-control"
-            value={String(props.value)}
+            value={props.value}
             onChange={ (e) => 
                 props.onChange(e, props.attribute) 
             }
@@ -13,4 +13,4 @@ function TextBox(props) {
     )
 }
 
-export { TextBox as default }
+export { DatePicker as default }

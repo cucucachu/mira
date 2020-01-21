@@ -43,9 +43,26 @@ class CreateInstance extends Component {
         Object.assign(updatedInstance, this.state.updatedInstance);
         state.updatedInstance = updatedInstance;
 
-        updatedInstance[attribute] = event.target.value;
+        if (attribute.type === 'Boolean') {
+            updatedInstance[attribute.name] = event.target.checked;
+        }
+        else if (attribute.type === 'Number') {
+            if (!this.isNumber(event.target.value)) {
+                return;
+            }
+            else {
+                updatedInstance[attribute.name] = event.target.value.match(/[0-9]*\.?[0-9]*/g)[0];
+            }
+        }
+        else {
+            updatedInstance[attribute.name] = event.target.value;
+        }
 
         this.setState(state);
+    }
+
+    isNumber(value) {
+        return /[0-9]*\.?[0-9]*/g.test(value);
     }
 
     initUpdatedInstance(schema, instance=null) {
@@ -55,7 +72,12 @@ class CreateInstance extends Component {
 
         if (instance === null) {
             for (const attribute of schema.attributes) {
-                updatedInstance[attribute.name] = null;
+                if (attribute.type === 'Boolean') {
+                    updatedInstance[attribute.name] = false;
+                }
+                else {
+                    updatedInstance[attribute.name] = null;
+                }
             }
             for (const relationship of singularRelationships) {
                 updatedInstance[relationship.name] = null;
@@ -76,7 +98,6 @@ class CreateInstance extends Component {
         newState.schema = schema;
         newState.loaded = true;
         newState.updatedInstance = this.initUpdatedInstance(schema);
-        console.log(JSON.stringify(schema, null, 2));
         this.setState(newState);
     }
 

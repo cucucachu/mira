@@ -9,16 +9,18 @@ function InstanceEdit(props) {
 
     return (
         <div className="container">
-            {
-                attributes.map(a => 
-                    <AttributeEdit
-                        attribute={a}
-                        value={ props.updatedInstance[a.name] }
-                        key={'AttributeEdit:' + a.name}
-                        onChangeAttribute={props.onChangeAttribute}
-                    />
-                )
-            }
+            <div className="form">
+                {
+                    attributes.map(a => 
+                        <AttributeEdit
+                            attribute={a}
+                            value={ props.updatedInstance[a.name] }
+                            key={'AttributeEdit:' + a.name}
+                            onChangeAttribute={props.onChangeAttribute}
+                        />
+                    )
+                }
+            </div>
         </div>
     )
 }
