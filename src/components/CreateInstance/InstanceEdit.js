@@ -24,15 +24,6 @@ function InstanceEdit(props) {
                     )
                 }
                 {
-                    // singularRelationships.map(r => 
-                    //     <SingularRelationshipSelector
-                    //         relationship={r}
-                    //         value={ props.updatedInstance[r.name] }
-                    //         classModel={ r.toClass }
-                    //         key={'SingularRelationshipEdit:' + r.name}
-                    //         onChange={props.onSelectSingularRelationship}
-                    //     />
-                    // )
                     singularRelationships.map(r => 
                         <SingularRelationshipEdit
                             instance={ props.updatedInstance[r.name] }
@@ -44,15 +35,6 @@ function InstanceEdit(props) {
                     )
                 }
                 {
-                    // nonSingularRelationships.map(r => 
-                    //     <NonSingularRelationshipSelector
-                    //         relationship={r}
-                    //         value={ props.updatedInstance[r.name] }
-                    //         classModel={ r.toClass }
-                    //         key={'NonSingularRelationshipEdit:' + r.name}
-                    //         onChange={props.onSelectNonSingularRelationship}
-                    //     />
-                    // )
                     nonSingularRelationships.map(r => 
                         <NonSingularRelationshipEdit
                             instances={ props.updatedInstance[r.name] }

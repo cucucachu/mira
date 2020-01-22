@@ -17,9 +17,26 @@ function NonSingularRelationshipEdit(props) {
 function renderInstanceListItem(props) {
     if (props.instances) {
         return (
-            <input type="text" className="form-control" readOnly={true} value={props.instances.map(i => i.displayAs)}></input>
+            <textarea 
+                className="form-control" 
+                readOnly={true}
+                rows={numberOfRowsForTextArea(props)}
+                value={InstancesAsTextRows(props)}
+            ></textarea>
         )
     }
+}
+
+function InstancesAsTextRows(props) {
+    let instancesAsText = '';
+    for (const index in props.instances) {
+        const instance = props.instances[index];
+        instancesAsText = instancesAsText + instance.displayAs;
+        if (index !== props.instances.length - 1) {
+            instancesAsText = instancesAsText + '\n'
+        }
+    }
+    return instancesAsText;
 }
 
 function renderButtons(props) {
@@ -35,6 +52,15 @@ function renderButtons(props) {
             </button>
         </div>
     )
+}
+
+function numberOfRowsForTextArea(props) {
+    if (props.instances.length < 5) {
+        return props.instances.length;
+    }
+    else {
+        return 5;
+    }
 }
 
 export { NonSingularRelationshipEdit as default }
