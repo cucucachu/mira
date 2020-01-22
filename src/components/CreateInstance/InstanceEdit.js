@@ -2,11 +2,13 @@ import React from 'react';
 
 import AttributeEdit from './AttributeEdit';
 import SingularRelationshipSelector from './SingularRelationshipSelector';
+import NonSingularRelationshipSelector from './NonSingularRelationshipSelector';
+import SubmitButton from './SubmitButton';
 
 function InstanceEdit(props) {
     const attributes = props.schema.attributes;
     const singularRelationships = props.schema.relationships.filter(r => r.singular);
-    // const nonSingularRelationships = props.schema.relationships.filter(r => !r.singular);
+    const nonSingularRelationships = props.schema.relationships.filter(r => !r.singular);
 
     return (
         <div className="container">
@@ -32,6 +34,20 @@ function InstanceEdit(props) {
                         />
                     )
                 }
+                {
+                    nonSingularRelationships.map(r => 
+                        <NonSingularRelationshipSelector
+                            relationship={r}
+                            value={ props.updatedInstance[r.name] }
+                            classModel={ r.toClass }
+                            key={'NonSingularRelationshipEdit:' + r.name}
+                            onChange={props.onSelectNonSingularRelationship}
+                        />
+                    )
+                }
+                <SubmitButton
+                    onClick={props.onClickSubmit}
+                />
             </div>
         </div>
     )

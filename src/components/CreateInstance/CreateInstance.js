@@ -73,6 +73,42 @@ class CreateInstance extends Component {
         this.setState(state);
     }
 
+    handleSelectNonSingularRelationship(relationship, instance) {
+        const state = {};
+        Object.assign(state, this.state);
+        const updatedInstance = {};
+        Object.assign(updatedInstance, this.state.updatedInstance);
+        state.updatedInstance = updatedInstance;
+
+        if (!updatedInstance[relationship.name]) {
+            updatedInstance[relationship.name] = [];
+        }
+
+        let nonSingularRelationship = Array.from(updatedInstance[relationship.name]);
+
+        updatedInstance[relationship.name] = nonSingularRelationship;
+
+        let instanceAlreadyInRelationship = false;
+        for (const index in nonSingularRelationship) {
+            const instanceInRelationship = nonSingularRelationship[index];
+            if (instance.id === instanceInRelationship.id) {
+                instanceAlreadyInRelationship = true;
+                nonSingularRelationship = nonSingularRelationship.splice(index, 1);
+            }
+        }
+        if (!instanceAlreadyInRelationship) {
+            nonSingularRelationship.push(instance);
+        }
+
+        this.setState(state);
+    }
+
+    handleClickSubmit(event) {
+        event.preventDefault();
+        console.log('clicked submit');
+        console.log(JSON.stringify(this.state.updatedInstance, null, 2));
+    }
+
     isNumber(value) {
         return /[0-9]*\.?[0-9]*/g.test(value);
     }
@@ -83,6 +119,7 @@ class CreateInstance extends Component {
         const nonSingularRelationships = schema.relationships.filter(r => !r.singular);
 
         if (instance === null) {
+            updatedInstance.className = this.props.classModel;
             for (const attribute of schema.attributes) {
                 if (attribute.type === 'Boolean') {
                     updatedInstance[attribute.name] = false;
@@ -177,6 +214,8 @@ class CreateInstance extends Component {
                         onChangeAttribute={this.handleChangeAttribute.bind(this)}
                         onClickPutInstance={this.onClickPutInstance.bind(this)}
                         onSelectSingularRelationship={this.handleSelectSingularRelationship.bind(this)}
+                        onSelectNonSingularRelationship={this.handleSelectNonSingularRelationship.bind(this)}
+                        onClickSubmit={this.handleClickSubmit.bind(this)}
                     />
                 </div>
 

@@ -5,6 +5,7 @@ function TextBox(props) {
         <input 
             type="text" 
             className="form-control"
+            required={props.required}
             value={String(props.value)}
             onChange={ (e) => 
                 props.onChange(e, props.attribute) 

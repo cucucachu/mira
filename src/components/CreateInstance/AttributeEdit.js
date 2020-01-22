@@ -80,6 +80,7 @@ function inputForType(props) {
             return (
                 <TextBox
                     attribute={props.attribute}
+                    required={props.attribute.required}
                     value={props.value !== null ? props.value : ''}
                     onChange={props.onChangeAttribute}
                 />
