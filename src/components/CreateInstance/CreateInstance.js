@@ -129,6 +129,9 @@ class CreateInstance extends Component {
                 updatedInstance[relationship.name] = null;
             }
         }
+        else {
+            updatedInstance[relationship.name] = state.instanceFinder.selectedInstances;
+        }
 
         this.setState(state);
     }
@@ -157,6 +160,10 @@ class CreateInstance extends Component {
                 instanceFinder.selectedInstances = [this.state.updatedInstance[relationship.name]];
             }
         }
+        else {
+            instanceFinder.selectedInstances = this.state.updatedInstance[relationship.name];
+        }
+
         this.setState(state);
     }
 
@@ -169,7 +176,13 @@ class CreateInstance extends Component {
         const selectedInstances = Array.from(instanceFinder.selectedInstances);
         instanceFinder.selectedInstances = selectedInstances;
 
-        selectedInstances.push(instance);
+        if (this.state.instanceFinder.relationship.singular && this.state.instanceFinder.selectedInstances.length) {
+            selectedInstances.splice(0, 1);
+            selectedInstances.push(instance);
+        }
+        else {
+            selectedInstances.push(instance);
+        }
         this.setState(state);
     }
 

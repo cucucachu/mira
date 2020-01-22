@@ -1,6 +1,6 @@
 import React from 'react';
 
-function SingularRelationshipEdit(props) {
+function NonSingularRelationshipEdit(props) {
     return (
         <div className="form-group">
             <label>
@@ -15,14 +15,9 @@ function SingularRelationshipEdit(props) {
 }
 
 function renderInstanceListItem(props) {
-    if (props.instance) {
+    if (props.instances) {
         return (
-            <input type="text" className="form-control" readOnly={true} value={props.instance.displayAs}></input>
-        )
-    }
-    else {
-        return (
-            <input type="text" className="form-control" readOnly={true} value=""></input>
+            <input type="text" className="form-control" readOnly={true} value={props.instances.map(i => i.displayAs)}></input>
         )
     }
 }
@@ -42,4 +37,4 @@ function renderButtons(props) {
     )
 }
 
-export { SingularRelationshipEdit as default }
+export { NonSingularRelationshipEdit as default }
