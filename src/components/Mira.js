@@ -13,7 +13,7 @@ class Mira extends React.Component {
         this.state = {
             currentState: 'ClassModels',
             classModel: null,
-            id: null,
+            id: null
         }
     }
 

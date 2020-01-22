@@ -1,7 +1,7 @@
 import React from 'react';
 
 import AttributeEdit from './AttributeEdit';
-import SingularRelationshipSelector from './SingularRelationshipSelector';
+import SingularRelationshipEdit from './SingularRelationshipEdit';
 import NonSingularRelationshipSelector from './NonSingularRelationshipSelector';
 import SubmitButton from './SubmitButton';
 
@@ -24,13 +24,22 @@ function InstanceEdit(props) {
                     )
                 }
                 {
+                    // singularRelationships.map(r => 
+                    //     <SingularRelationshipSelector
+                    //         relationship={r}
+                    //         value={ props.updatedInstance[r.name] }
+                    //         classModel={ r.toClass }
+                    //         key={'SingularRelationshipEdit:' + r.name}
+                    //         onChange={props.onSelectSingularRelationship}
+                    //     />
+                    // )
                     singularRelationships.map(r => 
-                        <SingularRelationshipSelector
+                        <SingularRelationshipEdit
+                            instance={ props.updatedInstance[r.name] }
                             relationship={r}
-                            value={ props.updatedInstance[r.name] }
-                            classModel={ r.toClass }
                             key={'SingularRelationshipEdit:' + r.name}
-                            onChange={props.onSelectSingularRelationship}
+                            onClickFindInstance={props.onClickFindInstance}
+                            onClickRemoveInstance={props.onClickRemoveInstance}
                         />
                     )
                 }

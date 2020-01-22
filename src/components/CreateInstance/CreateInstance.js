@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import VerticalPad from '../Common/VerticalPad';
+import InstanceFinder from '../InstanceFinder/InstanceFinder';
 import Spinner from '../Common/Spinner';
 import InstanceEdit from './InstanceEdit';
 
@@ -10,8 +11,11 @@ class CreateInstance extends Component {
         this.state = {
             schema: null,
             instance: null,
-            updatedInstance: {},
             loaded: false,
+            instanceFinder: {
+                relationship: {},
+                selectedInstances: [],
+            }
         }
     }
 
@@ -61,6 +65,10 @@ class CreateInstance extends Component {
         this.setState(state);
     }
 
+    handleRemoveInstanceFromSingularRelationship(relationship, instance) {
+        console.log('Clicked remove instance ' + instance.displayAs + ' from ' + relationship.name + '.');
+    }
+
     handleSelectSingularRelationship(relationship, instance) {
         const state = {};
         Object.assign(state, this.state);
@@ -103,10 +111,90 @@ class CreateInstance extends Component {
         this.setState(state);
     }
 
+    handleClickInstancesSelected() {
+        const state = {};
+        Object.assign(state, this.state);
+
+        const relationship = this.state.instanceFinder.relationship;
+
+        const updatedInstance = {};
+        Object.assign(updatedInstance, state.updatedInstance);
+        state.updatedInstance = updatedInstance;
+
+        if (relationship.singular) {
+            if (state.instanceFinder.selectedInstances.length > 0) {
+                updatedInstance[relationship.name] = state.instanceFinder.selectedInstances[0];
+            }
+            else {
+                updatedInstance[relationship.name] = null;
+            }
+        }
+
+        this.setState(state);
+    }
+
     handleClickSubmit(event) {
         event.preventDefault();
         console.log('clicked submit');
         console.log(JSON.stringify(this.state.updatedInstance, null, 2));
+    }
+
+    // Instance Finder Handlers
+
+    handleClickFindInstance(relationship) {
+        const state = {};
+        Object.assign(state, this.state);
+        const instanceFinder = {};
+        Object.assign(instanceFinder, state.instanceFinder);
+        state.instanceFinder = instanceFinder;
+        instanceFinder.relationship = relationship;
+        if (relationship.singular) {
+            const selectedInstance = this.state.updatedInstance[relationship.name];
+            if (selectedInstance === null) {
+                instanceFinder.selectedInstances = [];
+            }
+            else {
+                instanceFinder.selectedInstances = [this.state.updatedInstance[relationship.name]];
+            }
+        }
+        this.setState(state);
+    }
+
+    handleAddInstanceToSelectedInstances(instance) {
+        const state = {};
+        Object.assign(state, this.state);
+        const instanceFinder = {};
+        Object.assign(instanceFinder, state.instanceFinder);
+        state.instanceFinder = instanceFinder;
+        const selectedInstances = Array.from(instanceFinder.selectedInstances);
+        instanceFinder.selectedInstances = selectedInstances;
+
+        selectedInstances.push(instance);
+        this.setState(state);
+    }
+
+    handleRemoveInstanceFromSelectedInstances(instance) {
+        const state = {};
+        Object.assign(state, this.state);
+        const instanceFinder = {};
+        Object.assign(instanceFinder, state.instanceFinder);
+        state.instanceFinder = instanceFinder;
+        const selectedInstances = Array.from(instanceFinder.selectedInstances);
+        instanceFinder.selectedInstances = selectedInstances;
+
+        let removeIndex = null;
+        for (const index in selectedInstances) {
+            const selectedInstance = selectedInstances[index];
+            if (selectedInstance.id === instance.id) {
+                removeIndex = index;
+                break;
+            }
+        }
+
+        if (removeIndex !== null) {
+            selectedInstances.splice(removeIndex, 1);
+        }
+        this.setState(state);
     }
 
     isNumber(value) {
@@ -206,6 +294,13 @@ class CreateInstance extends Component {
                             </div>
                         </div>
                     </div>
+                    <InstanceFinder
+                        relationship={this.state.instanceFinder.relationship}
+                        selectedInstances={this.state.instanceFinder.selectedInstances}
+                        addInstanceToSelectedInstances={this.handleAddInstanceToSelectedInstances.bind(this)}
+                        removeInstanceFromSelectedInstances={this.handleRemoveInstanceFromSelectedInstances.bind(this)}
+                        onClickInstancesSelected={this.handleClickInstancesSelected.bind(this)}
+                    />
                     <VerticalPad />
                     <InstanceEdit
                         instance={this.state.instance}
@@ -216,6 +311,8 @@ class CreateInstance extends Component {
                         onSelectSingularRelationship={this.handleSelectSingularRelationship.bind(this)}
                         onSelectNonSingularRelationship={this.handleSelectNonSingularRelationship.bind(this)}
                         onClickSubmit={this.handleClickSubmit.bind(this)}
+                        onClickFindInstance={this.handleClickFindInstance.bind(this)}
+                        onClickRemoveInstance={this.handleRemoveInstanceFromSingularRelationship.bind(this)}
                     />
                 </div>
 

@@ -57,47 +57,56 @@ class SingularRelationshipSelector extends Component {
         }
     }
 
+    renderLoading() {
+        return (
+            <div>
+                <label>
+                    <strong>{ this.props.relationship.name }</strong>
+                </label>
+                <Spinner />
+            </div>
+        )
+    }
+
+    renderLoaded() {
+        return (
+            <div className="form-group">
+                <label>
+                    <strong>{ this.props.relationship.name }</strong>
+                </label>
+                <select 
+                    className="form-control"
+                    value={ this.getSelectValue() }
+                    onChange={
+                        (e) => 
+                            this.props.onChange(
+                                this.props.relationship, 
+                                e.target.value > 0 ? this.state.instances[e.target.value-1] : null
+                            )
+                    }
+                >
+                    <option value='0'>None</option>
+                    {
+                        this.state.instances.map((instance, index) =>
+                            <InstanceSelectItem 
+                                instance={ instance }
+                                index={ index + 1 }
+                                key={ 'InstanceSeletItem.' + this.props.relationship + '.' + instance.id }
+                            />
+                        )
+                    }
+                </select>
+            </div>
+        )
+
+    }
+
     render() {
         if (!this.state.loaded) {
-            return (
-                <div>
-                    <label>
-                        <strong>{ this.props.relationship.name }</strong>
-                    </label>
-                    <Spinner />
-                </div>
-            )
+            return this.renderLoading();
         }
         else {
-            return (
-                <div className="form-group">
-                    <label>
-                        <strong>{ this.props.relationship.name }</strong>
-                    </label>
-                    <select 
-                        className="form-control"
-                        value={ this.getSelectValue() }
-                        onChange={
-                            (e) => 
-                                this.props.onChange(
-                                    this.props.relationship, 
-                                    e.target.value > 0 ? this.state.instances[e.target.value-1] : null
-                                )
-                        }
-                    >
-                        <option value='0'>None</option>
-                        {
-                            this.state.instances.map((instance, index) =>
-                                <InstanceSelectItem 
-                                    instance={ instance }
-                                    index={ index + 1 }
-                                    key={ 'InstanceSeletItem.' + this.props.relationship + '.' + instance.id }
-                                />
-                            )
-                        }
-                    </select>
-                </div>
-            )
+            return this.renderLoaded();
         }
     }
 }
