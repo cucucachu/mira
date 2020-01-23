@@ -7,8 +7,6 @@ class ClassModelTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            onClickViewInstances: props.onClickViewInstances,
-            onClickCreateInstance: props.onClickCreateInstance,
             classModels: [],
             loaded: false,
         }
@@ -48,8 +46,8 @@ class ClassModelTable extends Component {
                                 return (
                                     <ClassModelAsRow 
                                         classModel={c}
-                                        onClickViewInstances={this.state.onClickViewInstances}
-                                        onClickCreateInstance={this.state.onClickCreateInstance}
+                                        onClickViewInstances={this.props.onClickViewInstances}
+                                        onClickEditInstance={this.props.onClickEditInstance}
                                         key={'ClassModelAsRow:' + c}
                                     />
                                 );

@@ -6,12 +6,11 @@ import Spinner from '../Common/Spinner';
 import ErrorAlert from '../Common/ErrorAlert';
 import InstanceEdit from './InstanceEdit';
 
-class CreateInstance extends Component {
+class EditInstance extends Component {
     constructor(props) {
         super(props);
         this.state = {
             schema: null,
-            instance: null,
             loaded: false,
             error: null,
             updatedInstance: {},
@@ -76,6 +75,83 @@ class CreateInstance extends Component {
 
         const response = await fetch('http://localhost:8000/mira/get', postRequest)
         return response.json();
+    }
+
+    isNumber(value) {
+        return /[0-9]*\.?[0-9]*/g.test(value);
+    }
+
+    initUpdatedInstance(schema, instance=null) {
+        const updatedInstance = {}
+        const singularRelationships = schema.relationships.filter(r => r.singular);
+        const nonSingularRelationships = schema.relationships.filter(r => !r.singular);
+
+        if (instance === null) {
+            updatedInstance.className = this.props.classModel;
+            for (const attribute of schema.attributes) {
+                if (attribute.type === 'Boolean') {
+                    updatedInstance[attribute.name] = false;
+                }
+                else {
+                    updatedInstance[attribute.name] = null;
+                }
+            }
+            for (const relationship of singularRelationships) {
+                updatedInstance[relationship.name] = null;
+            }
+            for (const relationship of nonSingularRelationships) {
+                updatedInstance[relationship.name] = [];
+            }
+        }
+        else {
+            updatedInstance.className = this.props.classModel;
+            updatedInstance.id = this.props.id;
+            for (const attribute of schema.attributes) {
+                updatedInstance[attribute.name] = instance[attribute.name] ? instance[attribute.name] : null;
+            }
+            for (const relationship of singularRelationships) {
+                updatedInstance[relationship.name] = instance[relationship.name] ? instance[relationship.name] : null;
+            }
+            for (const relationship of nonSingularRelationships) {
+                updatedInstance[relationship.name] = instance[relationship.name] ? instance[relationship.name] : [];
+            }
+        }
+
+        return updatedInstance;
+    }
+
+    async loadSchema() {
+        const schema = await this.fetchSchema();
+        
+        const state = {};
+        Object.assign(state, this.state);
+        state.schema = schema;
+        if (!this.props.id) {
+            state.loaded = true;
+            state.updatedInstance = this.initUpdatedInstance(schema);
+        }
+        this.setState(state);
+    }
+
+    async loadInstance() {
+        const instance = await this.fetchInstance();
+        const state = {};
+        Object.assign(state, this.state);
+        state.loaded = true;
+        state.updatedInstance = this.initUpdatedInstance(this.state.schema, instance);
+        this.setState(state);
+    }
+    
+    async load() {
+        await this.loadSchema();
+
+        if (this.props.id) {
+            await this.loadInstance();
+        }
+    }
+
+    componentDidMount() {
+        this.load();
     }
 
     handleChangeAttribute(event, attribute) {
@@ -260,68 +336,6 @@ class CreateInstance extends Component {
         this.setState(state);
     }
 
-    isNumber(value) {
-        return /[0-9]*\.?[0-9]*/g.test(value);
-    }
-
-    initUpdatedInstance(schema, instance=null) {
-        const updatedInstance = {}
-        const singularRelationships = schema.relationships.filter(r => r.singular);
-        const nonSingularRelationships = schema.relationships.filter(r => !r.singular);
-
-        if (instance === null) {
-            updatedInstance.className = this.props.classModel;
-            for (const attribute of schema.attributes) {
-                if (attribute.type === 'Boolean') {
-                    updatedInstance[attribute.name] = false;
-                }
-                else {
-                    updatedInstance[attribute.name] = null;
-                }
-            }
-            for (const relationship of singularRelationships) {
-                updatedInstance[relationship.name] = null;
-            }
-            for (const relationship of nonSingularRelationships) {
-                updatedInstance[relationship.name] = [];
-            }
-        }
-
-        return updatedInstance;
-    }
-
-    async loadSchema() {
-        const schema = await this.fetchSchema();
-        
-        const newState = {};
-        Object.assign(newState, this.state);
-        newState.schema = schema;
-        newState.loaded = true;
-        newState.updatedInstance = this.initUpdatedInstance(schema);
-        this.setState(newState);
-    }
-
-    async loadInstance() {
-        const instance = await this.fetchInstance();
-        const state = {};
-        Object.assign(state, this.state);
-        state.instance = instance;
-        state.loaded = true;
-        this.setState(state);
-    }
-    
-    async load() {
-        await this.loadSchema();
-
-        if (this.props.id) {
-            await this.loadInstance();
-        }
-    }
-
-    componentDidMount() {
-        this.load();
-    }
-
     onClickPutInstance() {
         console.log('Clicked Put instance.');
     }
@@ -387,4 +401,4 @@ class CreateInstance extends Component {
     }
 }
 
-export { CreateInstance as default }
+export { EditInstance as default }

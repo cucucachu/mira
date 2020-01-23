@@ -4,7 +4,7 @@ function EditInstanceButton(props) {
     return (
         <button 
             className="btn btn-success btn-sm" 
-            onClick={() => props.onClick(props.instance)}
+            onClick={() => props.onClick(props.instance.className, props.instance.id)}
         >Edit</button>
     )
 }

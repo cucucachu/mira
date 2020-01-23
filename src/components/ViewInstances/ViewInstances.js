@@ -210,7 +210,7 @@ class ViewInstances extends Component {
                         sortButtonStates={this.state.sortButtonStates}
                         onClickDeleteInstance={this.props.onClickDeleteInstance}
                         onClickViewInstance={this.props.onClickViewInstance}
-                        onClickCreateInstance={this.props.onClickCreateInstance}
+                        onClickEditInstance={this.props.onClickEditInstance}
                         onClickSort={this.handleClickSortButton.bind(this)}
                         key="InstancesTable"
                     />

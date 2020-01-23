@@ -18,7 +18,7 @@ function ClassModelAsRow(props) {
                     <div className="col-1">
                         <CreateInstanceButton
                             classModel={props.classModel}
-                            onClick={props.onClickCreateInstance}
+                            onClick={props.onClickEditInstance}
                         />
                         
                     </div>

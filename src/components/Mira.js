@@ -4,7 +4,7 @@ import Header from './Common/Header';
 import ClassModelTable from './ClassModelTable/ClassModelTable';
 import ViewInstances from './ViewInstances/ViewInstances';
 import ViewInstance from './ViewInstance/ViewInstance';
-import CreateInstance from './CreateInstance/CreateInstance';
+import EditInstance from './EditInstance/EditInstance';
 
 
 class Mira extends React.Component {
@@ -53,17 +53,13 @@ class Mira extends React.Component {
         this.setState(state);
     }
 
-    handleClickCreateInstance(classModel) {
+    handleClickEditInstance(classModel, id=null) {
         const state = {};
         Object.assign(state, this.state);
-        state.currentState = 'CreateInstance'
+        state.currentState = 'EditInstance'
         state.classModel = classModel;
-        state.id = null;
+        state.id = id;
         this.setState(state);
-    }
-
-    handleClickEditInstance(instance) {
-        console.log('Clicked "Edit" for instance ' + instance.displayAs);
     }
 
     handleClickDeleteInstance(instance) {
@@ -87,7 +83,7 @@ class Mira extends React.Component {
                 <div className="container">
                     <ClassModelTable 
                         onClickViewInstances={this.handleClickClassModel.bind(this)}
-                        onClickCreateInstance={this.handleClickCreateInstance.bind(this)}
+                        onClickEditInstance={this.handleClickEditInstance.bind(this)}
                     />
                 </div>
             </div>
@@ -104,7 +100,7 @@ class Mira extends React.Component {
                     classModel={this.state.classModel}
                     onClickDeleteInstance={this.handleClickDeleteInstance.bind(this)}
                     onClickViewInstance={this.handleClickViewInstance.bind(this)}
-                    onClickCreateInstance={this.handleClickCreateInstance.bind(this)}
+                    onClickEditInstance={this.handleClickEditInstance.bind(this)}
                 />
             </div>
         )
@@ -128,13 +124,13 @@ class Mira extends React.Component {
         )
     }
 
-    renderCreateInstance() {
+    renderEditInstance() {
         return (
             <div>
                 <Header 
                     onClick={this.handleClickHome.bind(this)}
                 />
-                <CreateInstance
+                <EditInstance
                     classModel={this.state.classModel}
                     id={this.state.id}
                     onSuccessfulPut={this.handleClickViewInstance.bind(this)}
@@ -152,12 +148,8 @@ class Mira extends React.Component {
                 return this.renderViewInstances();
             case 'ViewInstance':
                 return this.renderViewInstance();
-            case 'CreateInstance':
-                return this.renderCreateInstance();
             case 'EditInstance':
-                return (
-                    <div>EditInstance</div>
-                );
+                return this.renderEditInstance();
             default:
                 return (
                     <div>Invalid State: {this.state.currentState}</div>
