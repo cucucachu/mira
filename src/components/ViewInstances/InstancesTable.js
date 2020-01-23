@@ -51,7 +51,7 @@ function InstancesTable(props) {
                         </span>
                         <CreateInstanceButton
                             classModel={props.classModel}
-                            onClick={props.onEditCreateInstance} 
+                            onClick={props.onClickEditInstance} 
                         />
                     </th>
                 </tr>

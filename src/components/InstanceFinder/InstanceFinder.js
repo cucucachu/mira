@@ -5,6 +5,8 @@ import SelectedInstancesList from './SelectedInstancesList';
 import InstanceList from './InstanceList';
 import VerticalPad from '../Common/VerticalPad';
 
+import { fetchSchema, fetchInstances } from '../../publicSquare'; 
+
 class InstanceFinder extends Component {
     constructor(props) {
         super(props);
@@ -18,30 +20,8 @@ class InstanceFinder extends Component {
         }
     }
 
-    async fetchSchema() {
-        const response = await fetch('http://localhost:8000/mira/' + this.props.relationship.toClass);
-        return response.json();
-    }
-
-    async fetchInstances(filter={}) {
-        const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                className: this.props.relationship.toClass,
-                filter,
-                pageSize: 10,
-            }),
-        }
-
-        const response = await fetch('http://localhost:8000/mira/getInstances', postRequest)
-        return response.json();
-    }
-
     async loadSchema() {
-        const schema = await this.fetchSchema();
+        const schema = await fetchSchema(this.props.relationship.toClass);
 
         const state = {};
         Object.assign(state, this.state);
@@ -49,8 +29,8 @@ class InstanceFinder extends Component {
         this.setState(state);
     }
 
-    async loadInstances(filter) {
-        const instancesPage = await this.fetchInstances(filter);
+    async loadInstances(filter={}) {
+        const instancesPage = await fetchInstances(this.props.relationship.toClass, filter);
 
         const state = {};
         Object.assign(state, this.state);

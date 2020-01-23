@@ -4,11 +4,12 @@ import InstancesTable from './InstancesTable';
 import TablePagination from './TablePagination';
 import Spinner from '../Common/Spinner';
 
+import { fetchSchema, fetchInstances } from '../../publicSquare'; 
+
 class ViewInstances extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            onClickHome: props.onClickHome,
             schema: {
                 attributes: [],
                 relationships: [],
@@ -30,32 +31,8 @@ class ViewInstances extends Component {
         return newState;
     }
 
-    async fetchSchema() {
-        const response = await fetch('http://localhost:8000/mira/' + this.props.classModel);
-        return response.json();
-    }
-
-    async fetchInstances(page, orderBy) {
-        const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                className: this.props.classModel,
-                filter: this.state.filter,
-                pageSize: this.state.pageSize,
-                page: page - 1,
-                orderBy: orderBy,
-            }),
-        }
-
-        const response = await fetch('http://localhost:8000/mira/getInstances', postRequest)
-        return response.json();
-    }
-
     async loadSchema() {
-        const schema = await this.fetchSchema();
+        const schema = await fetchSchema(this.props.classModel);
         
         const newState = this.newState();
         newState.schema = schema;
@@ -67,7 +44,7 @@ class ViewInstances extends Component {
         newState.loaded = false;
         this.setState(newState);
 
-        const response = await this.fetchInstances(page, orderBy);
+        const response = await fetchInstances(this.props.classModel, this.state.filter, page-1, this.state.pageSize, orderBy);
 
         newState = this.newState();
         Object.assign(newState, {
@@ -199,37 +176,35 @@ class ViewInstances extends Component {
 
     renderInstancesTable() {
         if (this.state.loaded) {
-            if (this.state.instances.length) {
-                return (
-                    <div className="container">
-                    {this.renderInfo()}
-                    <InstancesTable 
-                        classModel={this.props.classModel}
-                        schema={this.state.schema}
-                        instances={this.state.instances}
-                        sortButtonStates={this.state.sortButtonStates}
-                        onClickDeleteInstance={this.props.onClickDeleteInstance}
-                        onClickViewInstance={this.props.onClickViewInstance}
-                        onClickEditInstance={this.props.onClickEditInstance}
-                        onClickSort={this.handleClickSortButton.bind(this)}
-                        key="InstancesTable"
-                    />
-                    <div className="row justify-content-between">
-                        <div className="col-4"></div>
-                        <div className="col-4">
-                            <TablePagination
-                                page={this.state.page}
-                                lastPage={(this.state.totalNumberOfInstances / this.state.pageSize) - (this.state.totalNumberOfInstances % this.state.pageSize)}
-                                onClick={this.handleClickPage.bind(this)}
-                                key="InstancesTablePagination"
-                            />
-                        </div>
-                        <div className="col-4"></div>
+            return (
+                <div className="container">
+                {this.renderInfo()}
+                <InstancesTable 
+                    classModel={this.props.classModel}
+                    schema={this.state.schema}
+                    instances={this.state.instances}
+                    sortButtonStates={this.state.sortButtonStates}
+                    onClickDeleteInstance={this.props.onClickDeleteInstance}
+                    onClickViewInstance={this.props.onClickViewInstance}
+                    onClickEditInstance={this.props.onClickEditInstance}
+                    onClickSort={this.handleClickSortButton.bind(this)}
+                    key="InstancesTable"
+                />
+                <div className="row justify-content-between">
+                    <div className="col-4"></div>
+                    <div className="col-4">
+                        <TablePagination
+                            page={this.state.page}
+                            totalInstances={this.state.instances.length}
+                            lastPage={(this.state.totalNumberOfInstances / this.state.pageSize) - (this.state.totalNumberOfInstances % this.state.pageSize)}
+                            onClick={this.handleClickPage.bind(this)}
+                            key="InstancesTablePagination"
+                        />
                     </div>
-                    </div>
-                )
-            }
-            else return <div className="container">No Instances</div>
+                    <div className="col-4"></div>
+                </div>
+                </div>
+            )
         }
         else return (
             <Spinner />

@@ -6,6 +6,8 @@ import DeleteInstanceButton from '../Common/DeleteInstanceButton';
 import EditInstanceButton from '../Common/EditInstanceButton';
 import VerticalPad from '../Common/VerticalPad';
 
+import { fetchSchema, fetchInstance } from '../../publicSquare'; 
+
 class ViewInstance extends Component {
     constructor(props) {
         super(props);
@@ -17,29 +19,8 @@ class ViewInstance extends Component {
         }
     }
 
-    async fetchSchema() {
-        const response = await fetch('http://localhost:8000/mira/' + this.props.classModel);
-        return response.json();
-    }
-
-    async fetchInstance() {
-        const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                className: this.props.classModel,
-                id: this.props.id,
-            }),
-        }
-
-        const response = await fetch('http://localhost:8000/mira/get', postRequest)
-        return response.json();
-    }
-
     async loadSchema() {
-        const schema = await this.fetchSchema();
+        const schema = await fetchSchema(this.props.classModel);
         
         const newState = {};
         Object.assign(newState, this.state);
@@ -48,7 +29,7 @@ class ViewInstance extends Component {
     }
 
     async loadInstance() {
-        const instance = await this.fetchInstance();
+        const instance = await fetchInstance(this.props.classModel, this.props.id);
         const state = {};
         Object.assign(state, this.state);
         state.instance = instance;

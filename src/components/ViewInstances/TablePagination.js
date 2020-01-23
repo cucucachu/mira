@@ -3,15 +3,18 @@ import React from 'react';
 import PaginationButton from './PaginationButton';
 
 function TablePagination(props) {
-    return (
-        <nav>
-            <ul className="pagination">
-                {
-                    renderPagination(props)
-                }
-            </ul>
-        </nav>
-    );
+    if (props.totalInstances > 0) {
+        return (
+            <nav>
+                <ul className="pagination">
+                    {
+                        renderPagination(props)
+                    }
+                </ul>
+            </nav>
+        );
+    }
+    else return <div></div>
 }
 
 function renderPagination(props) {

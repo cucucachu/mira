@@ -89,6 +89,7 @@ function inputForType(props) {
             return (
                 <TextBox
                     attribute={props.attribute}
+                    required={props.attribute.required}
                     value={props.value !== null ? props.value : ''}
                     onChange={props.onChangeAttribute}
                 />
@@ -97,6 +98,7 @@ function inputForType(props) {
             return (
                 <DatePicker
                     attribute={props.attribute}
+                    required={props.attribute.required}
                     value={props.value !== null ? props.value : ''}
                     onChange={props.onChangeAttribute}
                 />

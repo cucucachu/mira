@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { fetchClassModels } from '../../publicSquare'; 
 import ClassModelAsRow from './ClassModelAsRow';
 import Spinner from '../Common/Spinner';
 
@@ -12,19 +13,15 @@ class ClassModelTable extends Component {
         }
     }
 
-    loadClassModels() {
-        fetch('http://localhost:8000/mira/')
-            .then(response => response.json())
-            .then(
-                classModels => {
-                    const newState = {};
-                    Object.assign(newState, this.state);
+    async loadClassModels() {
+        const classModels = await fetchClassModels();
+        
+        const newState = {};
+        Object.assign(newState, this.state);
 
-                    newState.classModels = classModels.sort();
-                    newState.loaded = true;
-                    this.setState(newState);
-                }
-            ).catch(error => console.log(error.message));
+        newState.classModels = classModels.sort();
+        newState.loaded = true;
+        this.setState(newState);
     }
 
     componentDidMount() {

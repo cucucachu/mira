@@ -6,6 +6,8 @@ import Spinner from '../Common/Spinner';
 import ErrorAlert from '../Common/ErrorAlert';
 import InstanceEdit from './InstanceEdit';
 
+import { fetchSchema, fetchInstance } from '../../publicSquare'; 
+
 class EditInstance extends Component {
     constructor(props) {
         super(props);
@@ -56,26 +58,26 @@ class EditInstance extends Component {
         return response.json();
     }
 
-    async fetchSchema() {
-        const response = await fetch('http://localhost:8000/mira/' + this.props.classModel);
-        return response.json();
-    }
+    // async fetchSchema() {
+    //     const response = await fetch('http://localhost:8000/mira/' + this.props.classModel);
+    //     return response.json();
+    // }
 
-    async fetchInstance() {
-        const postRequest = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                className: this.props.classModel,
-                id: this.props.id,
-            }),
-        }
+    // async fetchInstance() {
+    //     const postRequest = {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
+    //             className: this.props.classModel,
+    //             id: this.props.id,
+    //         }),
+    //     }
 
-        const response = await fetch('http://localhost:8000/mira/get', postRequest)
-        return response.json();
-    }
+    //     const response = await fetch('http://localhost:8000/mira/get', postRequest)
+    //     return response.json();
+    // }
 
     isNumber(value) {
         return /[0-9]*\.?[0-9]*/g.test(value);
@@ -121,7 +123,7 @@ class EditInstance extends Component {
     }
 
     async loadSchema() {
-        const schema = await this.fetchSchema();
+        const schema = await fetchSchema(this.props.classModel);
         
         const state = {};
         Object.assign(state, this.state);
@@ -134,7 +136,7 @@ class EditInstance extends Component {
     }
 
     async loadInstance() {
-        const instance = await this.fetchInstance();
+        const instance = await fetchInstance(this.props.classModel, this.props.id);
         const state = {};
         Object.assign(state, this.state);
         state.loaded = true;

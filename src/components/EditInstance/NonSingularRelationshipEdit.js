@@ -1,17 +1,32 @@
 import React from 'react';
 
 function NonSingularRelationshipEdit(props) {
-    return (
-        <div className="form-group">
-            <label>
-                <strong>{ props.relationship.name }</strong>
-            </label>
-            <div className="input-group">
-                { renderInstanceListItem(props) }
-                { renderButtons(props) }
+    if (props.relationship.required) {
+        return (
+            <div className="form-group">
+                <label>
+                    <strong>{ props.relationship.name }</strong>
+                </label>
+                <div className="input-group">
+                    { renderInstanceListItem(props) }
+                    { renderButtons(props) }
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+    else {  
+        return (
+            <div className="form-group">
+                <label>
+                    <strong>{ props.relationship.name }</strong>
+                </label>
+                <div className="input-group">
+                    { renderInstanceListItem(props) }
+                    { renderButtons(props) }
+                </div>
+            </div>
+        )
+    }
 }
 
 function renderInstanceListItem(props) {
