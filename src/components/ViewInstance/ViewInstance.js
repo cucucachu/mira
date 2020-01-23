@@ -6,7 +6,7 @@ import DeleteInstanceButton from '../Common/DeleteInstanceButton';
 import EditInstanceButton from '../Common/EditInstanceButton';
 import VerticalPad from '../Common/VerticalPad';
 
-import { fetchSchema, fetchInstance } from '../../publicSquare'; 
+import { fetchSchema, fetchInstance } from '../../miraBackend'; 
 
 class ViewInstance extends Component {
     constructor(props) {

@@ -5,7 +5,7 @@ import SelectedInstancesList from './SelectedInstancesList';
 import InstanceList from './InstanceList';
 import VerticalPad from '../Common/VerticalPad';
 
-import { fetchSchema, fetchInstances } from '../../publicSquare'; 
+import { fetchSchema, fetchInstances } from '../../miraBackend'; 
 
 class InstanceFinder extends Component {
     constructor(props) {

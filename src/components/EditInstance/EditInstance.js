@@ -6,7 +6,7 @@ import Spinner from '../Common/Spinner';
 import ErrorAlert from '../Common/ErrorAlert';
 import InstanceEdit from './InstanceEdit';
 
-import { fetchSchema, fetchInstance } from '../../publicSquare'; 
+import { fetchSchema, fetchInstance } from '../../miraBackend'; 
 
 class EditInstance extends Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { fetchClassModels } from '../../publicSquare'; 
+import { fetchClassModels } from '../../miraBackend'; 
 import ClassModelAsRow from './ClassModelAsRow';
 import Spinner from '../Common/Spinner';
 

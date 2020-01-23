@@ -4,7 +4,7 @@ import InstancesTable from './InstancesTable';
 import TablePagination from './TablePagination';
 import Spinner from '../Common/Spinner';
 
-import { fetchSchema, fetchInstances } from '../../publicSquare'; 
+import { fetchSchema, fetchInstances } from '../../miraBackend'; 
 
 class ViewInstances extends Component {
     constructor(props) {
