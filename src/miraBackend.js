@@ -45,9 +45,25 @@ async function fetchInstances(classModel, filter={}, page=0, pageSize=10, orderB
     return response.json();
 }
 
+async function fetchDelete(classModel, id) {
+    const postRequest = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            className: classModel,
+            id: id
+        }),
+    }
+    const response = await fetch(url + 'delete', postRequest);
+    return response.json();
+}
+
 export { 
     fetchClassModels,
     fetchSchema,
     fetchInstance,
     fetchInstances,
+    fetchDelete,
 }

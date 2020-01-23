@@ -6,6 +6,8 @@ import ViewInstances from './ViewInstances/ViewInstances';
 import ViewInstance from './ViewInstance/ViewInstance';
 import EditInstance from './EditInstance/EditInstance';
 
+import { fetchDelete } from '../miraBackend';
+
 
 class Mira extends React.Component {
     constructor(props) {
@@ -13,6 +15,7 @@ class Mira extends React.Component {
         this.state = {
             currentState: 'ClassModels',
             classModel: null,
+            deletedMessage: null,
             id: null
         }
     }
@@ -29,6 +32,7 @@ class Mira extends React.Component {
         state.currentState = 'ViewInstances';
         state.classModel = classModel;
         state.id = null;
+        state.deletedMessage = null;
 
         this.setState(state);
     }
@@ -39,6 +43,7 @@ class Mira extends React.Component {
         state.currentState = 'ClassModels';
         state.classModel = null;
         state.id = null;
+        state.deletedMessage = null;
 
         this.setState(state);
     }
@@ -50,6 +55,7 @@ class Mira extends React.Component {
         state.currentState = 'ViewInstance';
         state.classModel = instance.className;
         state.id = instance.id;
+        state.deletedMessage = null;
         this.setState(state);
     }
 
@@ -59,11 +65,21 @@ class Mira extends React.Component {
         state.currentState = 'EditInstance'
         state.classModel = classModel;
         state.id = id;
+        state.deletedMessage = null;
         this.setState(state);
     }
 
     handleClickDeleteInstance(instance) {
         console.log('Clicked "Delete" for instance ' + instance.displayAs);
+        fetchDelete(instance.className, instance.id)
+            .then(() => {
+                const state = {};
+                Object.assign(state, this.state);
+                state.deletedMessage = 'Deleted Instance ' + instance.id;
+                state.currentState = 'ViewInstances';
+                this.setState(state);
+            }
+        )
     }
     
     // Rendering
@@ -98,6 +114,7 @@ class Mira extends React.Component {
                 />
                 <ViewInstances 
                     classModel={this.state.classModel}
+                    deletedMessage={this.state.deletedMessage}
                     onClickDeleteInstance={this.handleClickDeleteInstance.bind(this)}
                     onClickViewInstance={this.handleClickViewInstance.bind(this)}
                     onClickEditInstance={this.handleClickEditInstance.bind(this)}

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import InstancesTable from './InstancesTable';
 import TablePagination from './TablePagination';
+import SuccessAlert from '../Common/SuccessAlert';
 import Spinner from '../Common/Spinner';
 
 import { fetchSchema, fetchInstances } from '../../miraBackend'; 
@@ -68,6 +69,12 @@ class ViewInstances extends Component {
     // LifeCycle methods
     componentDidMount() {
         this.loadPage();
+    }
+
+    componentDidUpdate(newProps) {
+        if (newProps.deletedMessage !== this.props.deletedMessage) {
+            this.loadPage();
+        }
     }
 
     sortButtonStatesFromOrderBy(orderBy={_id: 1}) {
@@ -215,6 +222,9 @@ class ViewInstances extends Component {
         return (
             <div>
                 <div className="container">
+                    <SuccessAlert
+                        message={this.props.deletedMessage}
+                    />
                     <div className="row justify-content-between">
                         <div className="col-11">
                             <h4>View Instances of {this.props.classModel}</h4> 
