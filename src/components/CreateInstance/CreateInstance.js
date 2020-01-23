@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import VerticalPad from '../Common/VerticalPad';
 import InstanceFinder from '../InstanceFinder/InstanceFinder';
 import Spinner from '../Common/Spinner';
+import ErrorAlert from '../Common/ErrorAlert';
 import InstanceEdit from './InstanceEdit';
 
 class CreateInstance extends Component {
@@ -12,11 +13,48 @@ class CreateInstance extends Component {
             schema: null,
             instance: null,
             loaded: false,
+            error: null,
+            updatedInstance: {},
             instanceFinder: {
                 relationship: {},
                 selectedInstances: [],
             }
         }
+    }
+
+    transformUpdatedInstanceForPut() {
+        const putData = {};
+        Object.assign(putData, this.state.updatedInstance);
+
+        for (const relationship of this.state.schema.relationships) {
+            const value = putData[relationship.name];
+
+            if (relationship.singular) {
+                if (value !== null) {
+                    putData[relationship.name] = value.id;
+                }
+            }
+            else {
+                putData[relationship.name] = value.map(i => i.id);
+            }
+        }
+
+        console.log(JSON.stringify(putData, null, 2));
+
+        return putData;
+    }
+
+    async putInstance() {
+        const postData = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.transformUpdatedInstanceForPut()),
+        }
+
+        const response = await fetch('http://localhost:8000/mira/put', postData);
+        return response.json();
     }
 
     async fetchSchema() {
@@ -138,8 +176,20 @@ class CreateInstance extends Component {
 
     handleClickSubmit(event) {
         event.preventDefault();
-        console.log('clicked submit');
-        console.log(JSON.stringify(this.state.updatedInstance, null, 2));
+        this.putInstance()
+            .then(response => {
+                if (response.error) {
+                    const state = {};
+                    Object.assign(state, this.state);
+                    state.error = response.error;
+                    this.setState(state);
+                }
+                else {
+                    const instanceEdited = response.result[0];
+                    this.props.onSuccessfulPut(instanceEdited);
+                }
+            }
+        );
     }
 
     // Instance Finder Handlers
@@ -313,6 +363,9 @@ class CreateInstance extends Component {
                         addInstanceToSelectedInstances={this.handleAddInstanceToSelectedInstances.bind(this)}
                         removeInstanceFromSelectedInstances={this.handleRemoveInstanceFromSelectedInstances.bind(this)}
                         onClickInstancesSelected={this.handleClickInstancesSelected.bind(this)}
+                    />
+                    <ErrorAlert 
+                        message={this.state.error}
                     />
                     <VerticalPad />
                     <InstanceEdit

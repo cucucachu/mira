@@ -137,6 +137,7 @@ class Mira extends React.Component {
                 <CreateInstance
                     classModel={this.state.classModel}
                     id={this.state.id}
+                    onSuccessfulPut={this.handleClickViewInstance.bind(this)}
                 />
             </div>
         )
