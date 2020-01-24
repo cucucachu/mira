@@ -17,6 +17,7 @@ class EditInstance extends Component {
             schema: null,
             loaded: false,
             error: null,
+            invalidProperties: [],
             updatedInstance: {},
             instanceFinder: {
                 relationship: {},
@@ -114,7 +115,7 @@ class EditInstance extends Component {
             updatedInstance.className = this.state.classModel;
             updatedInstance.id = this.props.id;
             for (const attribute of schema.attributes) {
-                updatedInstance[attribute.name] = instance[attribute.name] ? instance[attribute.name] : null;
+                updatedInstance[attribute.name] = instance[attribute.name] !== undefined ? instance[attribute.name] : null;  
             }
             for (const relationship of singularRelationships) {
                 updatedInstance[relationship.name] = instance[relationship.name] ? instance[relationship.name] : null;
@@ -273,6 +274,7 @@ class EditInstance extends Component {
                     const state = {};
                     Object.assign(state, this.state);
                     state.error = response.error;
+                    state.invalidProperties = response.invalidProperties;
                     this.setState(state);
                 }
                 else {
@@ -429,7 +431,7 @@ class EditInstance extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-sm">
-                                <h4>Create Instance of { this.state.classModel }</h4>
+                                <h4>{this.props.id ? 'Edit' : 'Create'} Instance of { this.state.classModel }</h4>
                             </div>
                         </div>
                     </div>
@@ -448,6 +450,7 @@ class EditInstance extends Component {
                         instance={this.state.instance}
                         updatedInstance={this.state.updatedInstance}
                         schema={this.state.schema}
+                        invalidProperties={this.state.invalidProperties}
                         onChangeAttribute={this.handleChangeAttribute.bind(this)}
                         onClickPutInstance={this.onClickPutInstance.bind(this)}
                         onSelectSingularRelationship={this.handleSelectSingularRelationship.bind(this)}

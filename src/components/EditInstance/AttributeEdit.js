@@ -23,46 +23,34 @@ function AttributeEdit(props) {
     }
 }
 
+function labelColor(props) {
+    if (props.invalid) {
+        return 'text-danger';
+    }
+    if (props.attribute.required) {
+        return 'text-info';
+    }
+    return '';
+}
+
 function label(props) {
     if (props.attribute.type !== 'Boolean') {
-        if (props.attribute.required) {
-            return (
-                <label>
-                    <strong className="text-info">
-                        { props.attribute.name}
-                    </strong>
-                </label>
-            )
-        }
-        else {
-            return (
-                <label>
-                    <strong>
-                        { props.attribute.name}
-                    </strong>
-                </label>
-            )
-        }
+        return (
+            <label>
+                <strong className={labelColor(props)}>
+                    { props.attribute.name}
+                </strong>
+            </label>
+        )
     }
     else {
-        if (props.attribute.required) {
-            return (
-                <label className="form-check-label">
-                    <strong className="text-info">
-                        { props.attribute.name}
-                    </strong>
-                </label>
-            )
-        }
-        else {
-            return (
-                <label className="form-check-label">
-                    <strong>
-                        { props.attribute.name}
-                    </strong>
-                </label>
-            )
-        }
+        return (
+            <label className="form-check-label">
+                <strong className={labelColor(props)}>
+                    { props.attribute.name}
+                </strong>
+            </label>
+        )
     }
 }
 

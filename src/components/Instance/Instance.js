@@ -32,6 +32,7 @@ function Instance(props) {
                         <AttributeAsRow 
                             name={a.name} 
                             value={props.instance[a.name]}
+                            type={a.type}
                             key={'AttributeAsRow:' + props.instance.id + '.' + a.name}
                         />
                     )

@@ -1,33 +1,27 @@
 import React from 'react';
 
 function SingularRelationshipEdit(props) {
-    if (props.relationship.required) {
-        return (
-            <div className="form-group">
-                <label>
-                    <strong className="text-info">{ props.relationship.name }</strong>
-                </label>
-                <div className="input-group">
-                    { renderInstanceListItem(props) }
-                    { renderButtons(props) }
-                </div>
+    return (
+        <div className="form-group">
+            <label>
+                <strong className={labelColor(props)}>{ props.relationship.name }</strong>
+            </label>
+            <div className="input-group">
+                { renderInstanceListItem(props) }
+                { renderButtons(props) }
             </div>
-        )
-    }
-    else {
-        return (
-            <div className="form-group">
-                <label>
-                    <strong>{ props.relationship.name }</strong>
-                </label>
-                <div className="input-group">
-                    { renderInstanceListItem(props) }
-                    { renderButtons(props) }
-                </div>
-            </div>
-        )
+        </div>
+    )
+}
 
+function labelColor(props) {
+    if (props.invalid) {
+        return 'text-danger';
     }
+    if (props.relationship.required) {
+        return 'text-info';
+    }
+    return '';
 }
 
 function renderInstanceListItem(props) {

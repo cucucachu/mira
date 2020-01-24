@@ -18,6 +18,7 @@ function InstanceEdit(props) {
                         <AttributeEdit
                             attribute={a}
                             value={ props.updatedInstance[a.name] }
+                            invalid={props.invalidProperties.includes(a.name)}
                             key={'AttributeEdit:' + a.name}
                             onChangeAttribute={props.onChangeAttribute}
                         />
@@ -28,6 +29,7 @@ function InstanceEdit(props) {
                         <SingularRelationshipEdit
                             instance={ props.updatedInstance[r.name] }
                             relationship={r}
+                            invalid={props.invalidProperties.includes(r.name)}
                             key={'SingularRelationshipEdit:' + r.name}
                             onClickFindInstance={props.onClickFindInstance}
                             onClickRemoveInstance={props.onClickRemoveInstance}
@@ -39,6 +41,7 @@ function InstanceEdit(props) {
                         <NonSingularRelationshipEdit
                             instances={ props.updatedInstance[r.name] }
                             relationship={r}
+                            invalid={props.invalidProperties.includes(r.name)}
                             key={'NonSingularRelationshipEdit:' + r.name}
                             onClickFindInstance={props.onClickFindInstance}
                             onClickRemoveInstance={props.onClickRemoveInstance}
