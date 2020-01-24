@@ -5,6 +5,7 @@ import InstanceFinder from '../InstanceFinder/InstanceFinder';
 import Spinner from '../Common/Spinner';
 import ErrorAlert from '../Common/ErrorAlert';
 import InstanceEdit from './InstanceEdit';
+import SubClassSelectorForm from './SubClassSelectorForm';
 
 import { fetchSchema, fetchInstance } from '../../miraBackend'; 
 
@@ -12,6 +13,7 @@ class EditInstance extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            classModel: props.classModel,
             schema: null,
             loaded: false,
             error: null,
@@ -19,6 +21,9 @@ class EditInstance extends Component {
             instanceFinder: {
                 relationship: {},
                 selectedInstances: [],
+            },
+            subClassSelectorForm: {
+                value: null,
             }
         }
     }
@@ -59,7 +64,7 @@ class EditInstance extends Component {
     }
 
     // async fetchSchema() {
-    //     const response = await fetch('http://localhost:8000/mira/' + this.props.classModel);
+    //     const response = await fetch('http://localhost:8000/mira/' + this.state.classModel);
     //     return response.json();
     // }
 
@@ -70,7 +75,7 @@ class EditInstance extends Component {
     //             'Content-Type': 'application/json',
     //         },
     //         body: JSON.stringify({
-    //             className: this.props.classModel,
+    //             className: this.state.classModel,
     //             id: this.props.id,
     //         }),
     //     }
@@ -89,7 +94,7 @@ class EditInstance extends Component {
         const nonSingularRelationships = schema.relationships.filter(r => !r.singular);
 
         if (instance === null) {
-            updatedInstance.className = this.props.classModel;
+            updatedInstance.className = this.state.classModel;
             for (const attribute of schema.attributes) {
                 if (attribute.type === 'Boolean') {
                     updatedInstance[attribute.name] = false;
@@ -106,7 +111,7 @@ class EditInstance extends Component {
             }
         }
         else {
-            updatedInstance.className = this.props.classModel;
+            updatedInstance.className = this.state.classModel;
             updatedInstance.id = this.props.id;
             for (const attribute of schema.attributes) {
                 updatedInstance[attribute.name] = instance[attribute.name] ? instance[attribute.name] : null;
@@ -122,14 +127,18 @@ class EditInstance extends Component {
         return updatedInstance;
     }
 
-    async loadSchema() {
-        const schema = await fetchSchema(this.props.classModel);
+    async loadSchema(classModel) {
+        const schema = await fetchSchema(classModel);
         console.log(JSON.stringify(schema, null, 2));
         const state = {};
         Object.assign(state, this.state);
 
         if (schema.abstract) {
-            state.error = this.props.classModel + ' is an abstract class. Please select a sub-class to create an instance of instead.';
+            state.error = this.state.classModel + ' is an abstract class. Please select a sub-class to create an instance of instead.';
+            const subClassSelectorForm = {};
+            Object.assign(subClassSelectorForm, state.subClassSelectorForm);
+            state.subClassSelectorForm = subClassSelectorForm;
+            subClassSelectorForm.value = schema.subClasses[0];
         }
         state.schema = schema;
         if (!this.props.id) {
@@ -140,7 +149,7 @@ class EditInstance extends Component {
     }
 
     async loadInstance() {
-        const instance = await fetchInstance(this.props.classModel, this.props.id);
+        const instance = await fetchInstance(this.state.classModel, this.props.id);
         const state = {};
         Object.assign(state, this.state);
         state.loaded = true;
@@ -148,8 +157,8 @@ class EditInstance extends Component {
         this.setState(state);
     }
     
-    async load() {
-        await this.loadSchema();
+    async load(classModel) {
+        await this.loadSchema(classModel);
 
         if (this.props.id) {
             await this.loadInstance();
@@ -157,7 +166,7 @@ class EditInstance extends Component {
     }
 
     componentDidMount() {
-        this.load();
+        this.load(this.state.classModel);
     }
 
     handleChangeAttribute(event, attribute) {
@@ -346,12 +355,35 @@ class EditInstance extends Component {
         console.log('Clicked Put instance.');
     }
 
+    handleChangeSubClassSelectorForm(e) {
+        const state = {};
+        Object.assign(state, this.state);
+        const subClassSelectorFormState = {}
+        Object.assign(subClassSelectorFormState, state.subClassSelectorForm);
+        state.subClassSelectorForm = subClassSelectorFormState;
+
+        subClassSelectorFormState.value = e.target.value;
+
+        this.setState(state);
+    }
+
+    handleSubmitSubClassSelectorForm(e) {
+        e.preventDefault();
+        const state = {};
+        Object.assign(state, this.state);
+        state.classModel = this.state.subClassSelectorForm.value;
+        state.error = null;
+        this.setState(state);
+
+        this.load(state.classModel);
+    }
+
     renderLoading() {
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-sm">
-                        <h4>Create Instance of { this.props.classModel }</h4>
+                        <h4>Create Instance of { this.state.classModel }</h4>
                     </div>
                 </div>
                 <div className="row">
@@ -373,13 +405,21 @@ class EditInstance extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-sm">
-                                <h4>Create Instance of { this.props.classModel }</h4>
+                                <h4>Create Instance of { this.state.classModel }</h4>
                             </div>
                         </div>
                     </div>
                     <ErrorAlert 
                         message={this.state.error}
                     />
+                    <div className="container">
+                        <SubClassSelectorForm
+                            subClasses={this.state.schema.subClasses}
+                            value={this.state.subClassSelectorForm.value}
+                            onChange={this.handleChangeSubClassSelectorForm.bind(this)}
+                            onSubmit={this.handleSubmitSubClassSelectorForm.bind(this)}
+                        />
+                    </div>
                 </div>
             )
         }
@@ -389,7 +429,7 @@ class EditInstance extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-sm">
-                                <h4>Create Instance of { this.props.classModel }</h4>
+                                <h4>Create Instance of { this.state.classModel }</h4>
                             </div>
                         </div>
                     </div>
