@@ -7,6 +7,7 @@ import ErrorAlert from '../Common/ErrorAlert';
 import InstanceEdit from './InstanceEdit';
 import SubClassSelectorForm from './SubClassSelectorForm';
 
+import { validateInstance } from '../../instanceValidation';
 import { fetchSchema, fetchInstance } from '../../miraBackend'; 
 
 class EditInstance extends Component {
@@ -46,8 +47,6 @@ class EditInstance extends Component {
             }
         }
 
-        console.log(JSON.stringify(putData, null, 2));
-
         return putData;
     }
 
@@ -63,27 +62,6 @@ class EditInstance extends Component {
         const response = await fetch('http://localhost:8000/mira/put', postData);
         return response.json();
     }
-
-    // async fetchSchema() {
-    //     const response = await fetch('http://localhost:8000/mira/' + this.state.classModel);
-    //     return response.json();
-    // }
-
-    // async fetchInstance() {
-    //     const postRequest = {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             className: this.state.classModel,
-    //             id: this.props.id,
-    //         }),
-    //     }
-
-    //     const response = await fetch('http://localhost:8000/mira/get', postRequest)
-    //     return response.json();
-    // }
 
     isNumber(value) {
         return /[0-9]*\.?[0-9]*/g.test(value);
@@ -130,7 +108,6 @@ class EditInstance extends Component {
 
     async loadSchema(classModel) {
         const schema = await fetchSchema(classModel);
-        console.log(JSON.stringify(schema, null, 2));
         const state = {};
         Object.assign(state, this.state);
 
@@ -268,21 +245,34 @@ class EditInstance extends Component {
 
     handleClickSubmit(event) {
         event.preventDefault();
-        this.putInstance()
-            .then(response => {
-                if (response.error) {
-                    const state = {};
-                    Object.assign(state, this.state);
-                    state.error = response.error;
-                    state.invalidProperties = response.invalidProperties;
-                    this.setState(state);
+
+        const validation = validateInstance(this.state.updatedInstance, this.state.schema);
+
+        if (validation.invalidProperties.length) {
+           const state = {};
+           Object.assign(state, this.state);
+           state.invalidProperties = validation.invalidProperties;
+           state.error = validation.error;
+           this.setState(state);
+        }
+        else {
+            this.putInstance()
+                .then(response => {
+                    if (response.error) {
+                        const state = {};
+                        Object.assign(state, this.state);
+                        state.error = response.error;
+                        state.invalidProperties = response.invalidProperties;
+                        this.setState(state);
+                    }
+                    else {
+                        const instanceEdited = response.result[0];
+                        this.props.onSuccessfulPut(instanceEdited);
+                    }
                 }
-                else {
-                    const instanceEdited = response.result[0];
-                    this.props.onSuccessfulPut(instanceEdited);
-                }
-            }
-        );
+            );
+        }
+
     }
 
     // Instance Finder Handlers
