@@ -124,9 +124,13 @@ class EditInstance extends Component {
 
     async loadSchema() {
         const schema = await fetchSchema(this.props.classModel);
-        
+        console.log(JSON.stringify(schema, null, 2));
         const state = {};
         Object.assign(state, this.state);
+
+        if (schema.abstract) {
+            state.error = this.props.classModel + ' is an abstract class. Please select a sub-class to create an instance of instead.';
+        }
         state.schema = schema;
         if (!this.props.id) {
             state.loaded = true;
@@ -362,6 +366,22 @@ class EditInstance extends Component {
     render() {
         if (!this.state.loaded) {
             return this.renderLoading();
+        }
+        else if (this.state.schema.abstract) {
+            return (
+                <div>
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-sm">
+                                <h4>Create Instance of { this.props.classModel }</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <ErrorAlert 
+                        message={this.state.error}
+                    />
+                </div>
+            )
         }
         else {
             return (
