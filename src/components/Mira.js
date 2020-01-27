@@ -150,6 +150,8 @@ class Mira extends React.Component {
                 <EditInstance
                     classModel={this.state.classModel}
                     id={this.state.id}
+                    topLevelInstanceEdit={true}
+                    onClickCancel={this.handleClickHome.bind(this)}
                     onSuccessfulPut={this.handleClickViewInstance.bind(this)}
                 />
             </div>

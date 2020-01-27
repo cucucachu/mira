@@ -52,6 +52,10 @@ function InstancesAsTextRows(props) {
 function renderButtons(props) {
     return (
         <div className="input-group-append">
+            <button
+                className="btn btn-outline-success"
+                onClick={() => props.onClickCreateNestedInstance(props.relationship)}
+            >+</button>
             <button 
                 className="btn btn-outline-primary"
                 data-toggle="modal" 

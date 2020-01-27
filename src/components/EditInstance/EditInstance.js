@@ -18,6 +18,9 @@ class EditInstance extends Component {
             schema: null,
             loaded: false,
             error: null,
+            creatingNestedInstance: false,
+            tempIdIncrimenter: 1,
+            nestedInstanceRelationship: {},
             invalidProperties: [],
             updatedInstance: {},
             instanceFinder: {
@@ -38,12 +41,12 @@ class EditInstance extends Component {
             const value = putData[relationship.name];
 
             if (relationship.singular) {
-                if (value !== null) {
+                if (value !== null && value.id) {
                     putData[relationship.name] = value.id;
                 }
             }
             else {
-                putData[relationship.name] = value.map(i => i.id);
+                putData[relationship.name] = value.map(i => i.id ? i.id : i);
             }
         }
 
@@ -248,29 +251,44 @@ class EditInstance extends Component {
 
         const validation = validateInstance(this.state.updatedInstance, this.state.schema);
 
-        if (validation.invalidProperties.length) {
-           const state = {};
-           Object.assign(state, this.state);
-           state.invalidProperties = validation.invalidProperties;
-           state.error = validation.error;
-           this.setState(state);
+        if (this.props.topLevelInstanceEdit) {
+            if (validation.invalidProperties.length) {
+               const state = {};
+               Object.assign(state, this.state);
+               state.invalidProperties = validation.invalidProperties;
+               state.error = validation.error;
+               this.setState(state);
+            }
+            else {
+                this.putInstance()
+                    .then(response => {
+                        if (response.error) {
+                            const state = {};
+                            Object.assign(state, this.state);
+                            state.error = response.error;
+                            state.invalidProperties = response.invalidProperties;
+                            this.setState(state);
+                        }
+                        else {
+                            const instanceEdited = response.result[0];
+                            this.props.onSuccessfulPut(instanceEdited);
+                        }
+                    }
+                );
+            }
         }
         else {
-            this.putInstance()
-                .then(response => {
-                    if (response.error) {
-                        const state = {};
-                        Object.assign(state, this.state);
-                        state.error = response.error;
-                        state.invalidProperties = response.invalidProperties;
-                        this.setState(state);
-                    }
-                    else {
-                        const instanceEdited = response.result[0];
-                        this.props.onSuccessfulPut(instanceEdited);
-                    }
-                }
-            );
+            console.log('submit nested instance.');
+            if (validation.invalidProperties.length) {
+               const state = {};
+               Object.assign(state, this.state);
+               state.invalidProperties = validation.invalidProperties;
+               state.error = validation.error;
+               this.setState(state);
+            }
+            else {
+                this.props.onClickSubmitNestedInstance(this.state.updatedInstance, this.props.relationship)
+            }
         }
 
     }
@@ -296,6 +314,48 @@ class EditInstance extends Component {
         else {
             instanceFinder.selectedInstances = this.state.updatedInstance[relationship.name];
         }
+
+        this.setState(state);
+    }
+
+    handleClickCreateNestedInstance(relationship) {
+        console.log('Clicked create instance for relationship ' + relationship.name);
+        const state = {};
+        Object.assign(state, this.state);
+        state.creatingNestedInstance = true;
+        state.nestedInstanceRelationship = relationship;
+        this.setState(state);
+    }
+
+    handleClickSubmitNestedInstance(instance, relationship) {
+        console.log('Click submit nested instance for relationship ' + relationship.name);
+        console.log(JSON.stringify(instance));
+        const state = {};
+        Object.assign(state, this.state);
+        state.creatingNestedInstance = false;
+        state.nestedInstanceRelationship = {};
+        const updatedInstance = {};
+        Object.assign(updatedInstance, this.state.updatedInstance);
+        state.updatedInstance = updatedInstance;
+        instance.tempId = this.state.tempIdIncrimenter;
+        instance.displayAs = 'New Instance of ' + relationship.toClass + ' ' + instance.tempId;
+        state.tempIdIncrimenter = state.tempIdIncrimenter + 1;
+
+        if (relationship.singular) {
+            updatedInstance[relationship.name] = instance;
+        }
+        else {
+            updatedInstance[relationship.name].push(instance);
+        }
+
+        this.setState(state);
+    }
+
+    handleClickCancelNestedInstance() {
+        const state = {};
+        Object.assign(state, this.state);
+        state.creatingNestedInstance = false;
+        state.nestedInstanceRelationship = {};
 
         this.setState(state);
     }
@@ -415,6 +475,16 @@ class EditInstance extends Component {
                 </div>
             )
         }
+        else if (this.state.creatingNestedInstance) {
+            return (
+                <EditInstance
+                    classModel={this.state.nestedInstanceRelationship.toClass}
+                    relationship={this.state.nestedInstanceRelationship}
+                    onClickCancel={this.handleClickCancelNestedInstance.bind(this)}
+                    onClickSubmitNestedInstance={this.handleClickSubmitNestedInstance.bind(this)}
+                />
+            )
+        }
         else {
             return (
                 <div>
@@ -440,12 +510,15 @@ class EditInstance extends Component {
                         instance={this.state.instance}
                         updatedInstance={this.state.updatedInstance}
                         schema={this.state.schema}
+                        relationship={this.props.relationship}
                         invalidProperties={this.state.invalidProperties}
                         onChangeAttribute={this.handleChangeAttribute.bind(this)}
                         onClickPutInstance={this.onClickPutInstance.bind(this)}
                         onSelectSingularRelationship={this.handleSelectSingularRelationship.bind(this)}
                         onSelectNonSingularRelationship={this.handleSelectNonSingularRelationship.bind(this)}
                         onClickSubmit={this.handleClickSubmit.bind(this)}
+                        onClickCancel={this.props.onClickCancel}
+                        onClickCreateNestedInstance={this.handleClickCreateNestedInstance.bind(this)}
                         onClickFindInstance={this.handleClickFindInstance.bind(this)}
                         onClickRemoveInstance={this.handleRemoveInstanceFromSingularRelationship.bind(this)}
                     />

@@ -1,9 +1,9 @@
-function validateInstance(instance, schema) {
+function validateInstance(instance, schema, ignoreRelationship=null) {
     let invalidProperties = [];
     let error = '';
-    const missingRequiredFields = validateRequiredFields(instance, schema);
-    const missingRequiredGroups = validateRequiredGroup(instance, schema);
-    const mutexesWithMultipleValues = validateMutex(instance, schema);
+    const missingRequiredFields = validateRequiredFields(instance, schema, ignoreRelationship);
+    const missingRequiredGroups = validateRequiredGroup(instance, schema, ignoreRelationship);
+    const mutexesWithMultipleValues = validateMutex(instance, schema, ignoreRelationship);
 
     if (missingRequiredFields.length) {
         invalidProperties = invalidProperties.concat(missingRequiredFields);
@@ -32,8 +32,7 @@ function validateInstance(instance, schema) {
     };
 }
 
-function validateRequiredFields(instance, schema) {
-    console.log('validateRequiredFields()');
+function validateRequiredFields(instance, schema, ignoreRelationship) {
     const invalidProperties = [];
 
     for (const attribute of schema.attributes) {
@@ -45,14 +44,14 @@ function validateRequiredFields(instance, schema) {
     }
     for (const singularRelationship of schema.relationships.filter(r => r.singular)) {
         if (singularRelationship.required) {
-            if (instance[singularRelationship.name] === null) {
+            if (instance[singularRelationship.name] === null && singularRelationship.name !== ignoreRelationship) {
                 invalidProperties.push(singularRelationship.name);
             }
         }
     }
     for (const nonSingularRelationship of schema.relationships.filter(r => !r.singular)) {
         if (nonSingularRelationship.required) {
-            if (instance[nonSingularRelationship.name].length === 0) {
+            if (instance[nonSingularRelationship.name].length === 0 && nonSingularRelationship.name !== ignoreRelationship) {
                 invalidProperties.push(nonSingularRelationship.name);
             }
         }
@@ -61,7 +60,7 @@ function validateRequiredFields(instance, schema) {
     return invalidProperties;
 }
 
-function validateRequiredGroup(instance, schema) {
+function validateRequiredGroup(instance, schema, ignoreRelationship) {
     const invalidProperties = [];
     const requiredGroups = [];
     const properties = schema.attributes.concat(schema.relationships);
@@ -99,7 +98,7 @@ function validateRequiredGroup(instance, schema) {
 
     for (const singularRelationship of schema.relationships.filter(r => r.singular)) {
         if (singularRelationship.requiredGroup) {
-            if (instance[singularRelationship.name] !== null) {
+            if (instance[singularRelationship.name] !== null || singularRelationship.name === ignoreRelationship) {
                 const index = requiredGroups.indexOf(singularRelationship.requiredGroup);
                 if (index !== -1) {
                     requiredGroups.splice(index, 1);
@@ -111,7 +110,7 @@ function validateRequiredGroup(instance, schema) {
 
     for (const nonSingularRelationship of schema.relationships.filter(r => !r.singular)) {
         if (nonSingularRelationship.requiredGroup) {
-            if (instance[nonSingularRelationship.name] !== null && instance[nonSingularRelationship.name].length) {
+            if ((instance[nonSingularRelationship.name] !== null && instance[nonSingularRelationship.name].length)|| nonSingularRelationship.name === ignoreRelationship) {
                 const index = requiredGroups.indexOf(nonSingularRelationship.requiredGroup);
                 if (index !== -1) {
                     requiredGroups.splice(index, 1);
@@ -133,7 +132,7 @@ function validateRequiredGroup(instance, schema) {
     return invalidProperties;
 }
 
-function validateMutex(instance, schema) {
+function validateMutex(instance, schema, ignoreRelationship) {
     const invalidProperties = [];
     const mutexes = [];
     const mutexesWithMultipleValues = [];
@@ -171,7 +170,7 @@ function validateMutex(instance, schema) {
     
         for (const singularRelationship of schema.relationships.filter(r => r.singular)) {
             if (singularRelationship.mutex) {
-                if (instance[singularRelationship.name] !== null) {
+                if (instance[singularRelationship.name] !== null || singularRelationship.name === ignoreRelationship) {
                     numberOfPropertiesSet++;    
                 }
             }
@@ -179,7 +178,7 @@ function validateMutex(instance, schema) {
     
         for (const nonSingularRelationship of schema.relationships.filter(r => !r.singular)) {
             if (nonSingularRelationship.mutex) {
-                if (instance[nonSingularRelationship.name] !== null && instance[nonSingularRelationship.name].length) {
+                if ((instance[nonSingularRelationship.name] !== null && instance[nonSingularRelationship.name].length) || nonSingularRelationship.name === ignoreRelationship) {
                     numberOfPropertiesSet++;
                 }
             }
