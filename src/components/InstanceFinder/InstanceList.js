@@ -15,7 +15,7 @@ function InstanceList(props) {
                             return (
                                 <button 
                                     className="list-group-item list-group-item-action"
-                                    key={ 'SelectInstanceButton-' + instance.id }
+                                    key={ 'SelectInstanceButton-' + (instance.id ? instance.id : instance.tempId) }
                                     onClick={() => props.onClick(instance)}
                                 >
                                     { instance.displayAs }

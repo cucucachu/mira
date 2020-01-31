@@ -101,6 +101,26 @@ class InstanceFinder extends Component {
         }
     }
 
+    renderCreatedInstancesList() {
+        const createdInstancesOfProperClass = this.props.createdInstances.filter(i => i.className === this.props.relationship.toClass);
+        if (createdInstancesOfProperClass.length) {
+            return (
+                <div>
+                    <label><strong>Created Instances:</strong></label>
+                    <InstanceList
+                        instances={createdInstancesOfProperClass}
+                        loaded={true}
+                        onClick={this.handleClickInstance.bind(this)}
+                    />
+                    <VerticalPad />
+                </div>
+            )
+        }
+        else {
+            return <div></div>
+        }
+    }
+
     render() {
         return (
             <div className="modal fade" id="instance-selector-modal">
@@ -118,6 +138,8 @@ class InstanceFinder extends Component {
                                 onClickRemoveInstance={this.handleClickRemoveInstance.bind(this)}
                             />
                             <VerticalPad />
+                            { this.renderCreatedInstancesList() }
+                            <label><strong>Search for Instances:</strong></label>
                             <InstanceSearchBar
                                 searchText={this.state.searchText}
                                 onChangeSearchText={this.handleChangeSearchText.bind(this)}

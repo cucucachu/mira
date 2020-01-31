@@ -19,7 +19,8 @@ class EditInstance extends Component {
             loaded: false,
             error: null,
             creatingNestedInstance: false,
-            tempIdIncrimenter: 1,
+            tempIdIncrimenter: 0,
+            tempInstances: [],
             nestedInstanceRelationship: {},
             invalidProperties: [],
             updatedInstance: {},
@@ -338,8 +339,10 @@ class EditInstance extends Component {
         Object.assign(updatedInstance, this.state.updatedInstance);
         state.updatedInstance = updatedInstance;
         instance.tempId = this.state.tempIdIncrimenter;
-        instance.displayAs = 'New Instance of ' + relationship.toClass + ' ' + instance.tempId;
+        instance.displayAs = 'New Instance of ' + relationship.toClass + ' ' + (instance.tempId + 1);
         state.tempIdIncrimenter = state.tempIdIncrimenter + 1;
+        state.tempInstances = Array.from(this.state.tempInstances);
+        state.tempInstances.push(instance);
 
         if (relationship.singular) {
             updatedInstance[relationship.name] = instance;
@@ -498,6 +501,7 @@ class EditInstance extends Component {
                     <InstanceFinder
                         relationship={this.state.instanceFinder.relationship}
                         selectedInstances={this.state.instanceFinder.selectedInstances}
+                        createdInstances={this.state.tempInstances}
                         addInstanceToSelectedInstances={this.handleAddInstanceToSelectedInstances.bind(this)}
                         removeInstanceFromSelectedInstances={this.handleRemoveInstanceFromSelectedInstances.bind(this)}
                         onClickInstancesSelected={this.handleClickInstancesSelected.bind(this)}

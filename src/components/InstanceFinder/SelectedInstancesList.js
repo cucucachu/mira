@@ -8,7 +8,10 @@ function SelectedInstancesList(props) {
                 {
                     props.selectedInstances.map(instance => {
                         return (
-                            <li className="list-group-item" key={'SelectedInstancesList:Instance:' + instance.id}>
+                            <li 
+                                className="list-group-item" 
+                                key={'SelectedInstancesList:Instance:' + (instance.id ? instance.id : instance.tempId)
+                            }>
                                 <div className="row">
                                     <div className="col-11">
                                         {instance.displayAs}
