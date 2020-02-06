@@ -250,7 +250,9 @@ class EditInstance extends Component {
     handleClickSubmit(event) {
         event.preventDefault();
 
-        const validation = validateInstance(this.state.updatedInstance, this.state.schema);
+        const mirrorRelationship = this.props.relationship ? this.props.relationship.mirrorRelationship : undefined;
+
+        const validation = validateInstance(this.state.updatedInstance, this.state.schema, mirrorRelationship);
 
         if (this.props.topLevelInstanceEdit) {
             if (validation.invalidProperties.length) {
@@ -331,12 +333,10 @@ class EditInstance extends Component {
     handleClickSubmitNestedInstance(instance, relationship) {
         console.log('Click submit nested instance for relationship ' + relationship.name);
         console.log(JSON.stringify(instance));
-        const state = {};
-        Object.assign(state, this.state);
+        const state = Object.assign({}, this.state);
         state.creatingNestedInstance = false;
         state.nestedInstanceRelationship = {};
-        const updatedInstance = {};
-        Object.assign(updatedInstance, this.state.updatedInstance);
+        const updatedInstance = Object.assign({}, this.state.updatedInstance);
         state.updatedInstance = updatedInstance;
         instance.tempId = this.state.tempIdIncrimenter;
         instance.displayAs = 'New Instance of ' + relationship.toClass + ' ' + (instance.tempId + 1);

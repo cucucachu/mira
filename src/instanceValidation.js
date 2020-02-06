@@ -1,4 +1,4 @@
-function validateInstance(instance, schema, ignoreRelationship=null) {
+function validateInstance(instance, schema, ignoreRelationship) {
     let invalidProperties = [];
     let error = '';
     const missingRequiredFields = validateRequiredFields(instance, schema, ignoreRelationship);
@@ -34,6 +34,7 @@ function validateInstance(instance, schema, ignoreRelationship=null) {
 
 function validateRequiredFields(instance, schema, ignoreRelationship) {
     const invalidProperties = [];
+    console.log('ignoring relationship ' + ignoreRelationship);
 
     for (const attribute of schema.attributes) {
         if (attribute.required) {
